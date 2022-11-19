@@ -73,16 +73,13 @@ namespace RestaurantManagement.Application.Repositories
         #region CRUD
         Task<bool> AddAsync(T entity);
         Task<bool> AddRangeAsync(List<T> entities);
-        bool Remove(string id);
-        bool Remove(T entity);
+        Task<bool> Remove(string id);
+        Task<bool> Remove(T entity);
         bool RemoveRange(List<T> entities);
         Task<bool> Update(T entity);
 
         bool BulkDeleteById(List<string> ids);
         bool BulkDeleteById(Expression<Func<T, bool>> expression);
-
-        Task<int> SaveAsync();
-        int Save();
         #endregion
     }
 }

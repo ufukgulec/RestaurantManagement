@@ -9,15 +9,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{89EB5A6F-C44E-4547-AB23-9B4F33E81A07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantManagement.Application", "Core\RestaurantManagement.Application\RestaurantManagement.Application.csproj", "{5F70EC1C-0748-45DA-BC37-735A39EFCC60}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestaurantManagement.Application", "Core\RestaurantManagement.Application\RestaurantManagement.Application.csproj", "{5F70EC1C-0748-45DA-BC37-735A39EFCC60}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantManagement.Domain", "Core\RestaurantManagement.Domain\RestaurantManagement.Domain.csproj", "{7772D49F-9CB7-4F24-A113-4F5A5357CF9E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestaurantManagement.Domain", "Core\RestaurantManagement.Domain\RestaurantManagement.Domain.csproj", "{7772D49F-9CB7-4F24-A113-4F5A5357CF9E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantManagement.Infrastructure", "Infrastructure\RestaurantManagement.Infrastructure\RestaurantManagement.Infrastructure.csproj", "{89832D17-95CB-4F61-82BA-6A855E6B28EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestaurantManagement.Infrastructure", "Infrastructure\RestaurantManagement.Infrastructure\RestaurantManagement.Infrastructure.csproj", "{89832D17-95CB-4F61-82BA-6A855E6B28EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantManagement.Persistence", "Infrastructure\RestaurantManagement.Persistence\RestaurantManagement.Persistence.csproj", "{B1EBFCCF-9AE4-4E07-AC7F-0F2ACDF9223A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestaurantManagement.Persistence", "Infrastructure\RestaurantManagement.Persistence\RestaurantManagement.Persistence.csproj", "{B1EBFCCF-9AE4-4E07-AC7F-0F2ACDF9223A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantManagement.API", "Presentation\RestaurantManagement.API\RestaurantManagement.API.csproj", "{8EB39639-6326-442C-9088-4C1C594B628C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestaurantManagement.API", "Presentation\RestaurantManagement.API\RestaurantManagement.API.csproj", "{8EB39639-6326-442C-9088-4C1C594B628C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantManagement.MVC", "Presentation\RestaurantManagement.MVC\RestaurantManagement.MVC.csproj", "{22190DBA-7523-44BA-B649-C88EABDEBA69}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{8EB39639-6326-442C-9088-4C1C594B628C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8EB39639-6326-442C-9088-4C1C594B628C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8EB39639-6326-442C-9088-4C1C594B628C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22190DBA-7523-44BA-B649-C88EABDEBA69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22190DBA-7523-44BA-B649-C88EABDEBA69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22190DBA-7523-44BA-B649-C88EABDEBA69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22190DBA-7523-44BA-B649-C88EABDEBA69}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -55,6 +61,7 @@ Global
 		{89832D17-95CB-4F61-82BA-6A855E6B28EE} = {F704B876-F3BA-4BCE-9CB3-9FB6760FFD15}
 		{B1EBFCCF-9AE4-4E07-AC7F-0F2ACDF9223A} = {F704B876-F3BA-4BCE-9CB3-9FB6760FFD15}
 		{8EB39639-6326-442C-9088-4C1C594B628C} = {89EB5A6F-C44E-4547-AB23-9B4F33E81A07}
+		{22190DBA-7523-44BA-B649-C88EABDEBA69} = {89EB5A6F-C44E-4547-AB23-9B4F33E81A07}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {86CB9B99-FC6E-4E4A-8C66-6CE6213C2455}

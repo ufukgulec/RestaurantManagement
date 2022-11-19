@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
 using RestaurantManagement.Application;
 using RestaurantManagement.Application.Repositories;
 
@@ -15,22 +16,18 @@ namespace RestaurantManagement.API.Controllers
         {
             _categoryRepository = service.CategoryRepository;
         }
-        [HttpGet("GetAll")]
-        public async Task<IActionResult> Get()
+        [HttpGet("AdvancedGetAll")]
+        [EnableQuery]
+        public IActionResult advancedGetAll()
         {
-            var data = await _categoryRepository.GetListAsync();
+            var data = _categoryRepository.GetAll(default, false);
             return Ok(data);
         }
-        [HttpGet("GetAlll")]
-        public IActionResult GetList()
+
+        [HttpGet("Get/{id}")]
+        public async Task<IActionResult> Get(string id)
         {
-            var data = _categoryRepository.GetList();
-            return Ok(data);
-        }
-        [HttpGet("GetAll/{justActive}")]
-        public async Task<IActionResult> GetAll(bool justActive)
-        {
-            var data = await _categoryRepository.GetListAsync(default, justActive);
+            var data = await _categoryRepository.GetByIdAsync(id);
             return Ok(data);
         }
     }

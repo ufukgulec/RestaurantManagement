@@ -147,30 +147,38 @@ namespace RestaurantManagement.Application.Repositories
         public async Task<bool> AddAsync(T entity)
         {
             EntityEntry<T> entityEntry = await Table.AddAsync(entity);
-            await SaveAsync();
-            return entityEntry.State == EntityState.Added;
+
+            if (await _context.SaveChangesAsync() > 0)
+            {
+                return true;
+            }
+            return false;
         }
 
         public async Task<bool> AddRangeAsync(List<T> entities)
         {
             await Table.AddRangeAsync(entities);
-            await SaveAsync();
+            //await SaveAsync();
             return true;
         }
 
         public async Task<bool> Update(T entity)
         {
             EntityEntry<T> entityEntry = Table.Update(entity);
-            await SaveAsync();
-            return entityEntry.State == EntityState.Modified;
+
+            if (await _context.SaveChangesAsync() > 0)
+            {
+                return true;
+            }
+            return false;
         }
 
-        public bool Remove(string id)
+        public async Task<bool> Remove(string id)
         {
-            var entity = Table.Find(id);
+            var entity = await GetByIdAsync(id);
             if (entity is not null)
             {
-                return Remove(entity);
+                return await Remove(entity);
             }
             else
             {
@@ -179,17 +187,20 @@ namespace RestaurantManagement.Application.Repositories
 
         }
 
-        public bool Remove(T entity)
+        public async Task<bool> Remove(T entity)
         {
             EntityEntry<T> entityEntry = Table.Remove(entity);
-            Save();
-            return entityEntry.State == EntityState.Deleted;
+            if (await _context.SaveChangesAsync() > 0)
+            {
+                return true;
+            }
+            return false;
         }
 
         public bool RemoveRange(List<T> entities)
         {
             Table.RemoveRange(entities);
-            Save();
+            //Save();
             return true;
         }
 
@@ -197,7 +208,7 @@ namespace RestaurantManagement.Application.Repositories
         {
             foreach (var id in ids)
             {
-                Remove(id);
+                // Remove(id);
             }
             return true;
         }
@@ -209,13 +220,5 @@ namespace RestaurantManagement.Application.Repositories
 
         }
         #endregion
-        public async Task<int> SaveAsync()
-        {
-            return await _context.SaveChangesAsync();
-        }
-        public int Save()
-        {
-            return _context.SaveChanges();
-        }
     }
 }

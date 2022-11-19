@@ -36,19 +36,19 @@ namespace RestaurantManagement.Persistence.Contexts
             }
             //optionsBuilder.LogTo(message => Console.WriteLine(message));
         }
-        public override int SaveChanges()
-        {
-            OnBeforeSave();
-            return base.SaveChanges();
-        }
-        public override int SaveChanges(bool acceptAllChangesOnSuccess)
-        {
-            OnBeforeSave();
-            return base.SaveChanges(acceptAllChangesOnSuccess);
-        }
+        //public override int SaveChanges()
+        //{
+        //    OnBeforeSave();
+        //    return base.SaveChanges();
+        //}
+        //public override int SaveChanges(bool acceptAllChangesOnSuccess)
+        //{
+        //    OnBeforeSave();
+        //    return base.SaveChanges(acceptAllChangesOnSuccess);
+        //}
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
-            OnBeforeSave();
+            //OnBeforeSave();
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -65,14 +65,22 @@ namespace RestaurantManagement.Persistence.Contexts
             var modified = ChangeTracker.Entries()
                                     .Where(i => i.State == EntityState.Modified)
                                     .Select(i => (BaseEntity)i.Entity);
-            PrepareAddedEntities(added);
-            PrepareModifiedEntities(modified);
+            if (added.Count()>0)
+            {
+                PrepareAddedEntities(added);
+            }
+            else if (modified.Count() > 0)
+            {
+                PrepareModifiedEntities(modified);
+            }
+            
         }
         private void PrepareAddedEntities(IEnumerable<BaseEntity> entities)
         {
             foreach (var entity in entities)
             {
                 entity.CreatedDate = DateTime.Now;
+                entity.UpdatedDate = DateTime.Now;
             }
         }
         private void PrepareModifiedEntities(IEnumerable<BaseEntity> entities)

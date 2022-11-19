@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.OData;
 using RestaurantManagement.Persistence;
 using System.Text.Json.Serialization;
 
@@ -8,7 +9,11 @@ builder.Services.AddPersistenceServicesAsync(builder.Configuration);
 builder.Services.AddControllers().AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddOData(con =>
+    {
+        con.EnableQueryFeatures();
+    });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

@@ -1,0 +1,479 @@
+﻿@using Newtonsoft.Json
+@model List<RestaurantManagement.Domain.Entities.Category>
+@{
+    ViewData["Title"] = "Index";
+}
+@section Styles{
+    <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/22.1.6/css/dx.common.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/22.1.6/css/dx.light.css" />
+}
+    <div class="d-flex flex-column-fluid">
+        <div class="container">
+            <div class="card card-custom">
+                <div class="card-body">
+                    <div id="selectStatus"></div>
+                    <div id="gridContainer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @section Scripts{
+    <script src="https://cdn3.devexpress.com/jslib/22.1.6/js/dx.all.js"></script>
+    <script src="https://unpkg.com/devextreme-aspnet-data@2.8.6/js/dx.aspnet.data.js"></script>
+    <script>
+        function getData() {
+            return @Html.Raw(JsonConvert.SerializeObject(Model));
+
+        }
+        $(() => {
+            bind2();
+        });
+        function bind1() {
+            $('#gridContainer').dxDataGrid({
+                dataSource: getData(),
+                scrolling: {
+                    rowRenderingMode: 'virtual',
+                },
+                paging: {
+                    pageSize: 10,
+                },
+                pager: {
+                    visible: true,
+                    allowedPageSizes: [10, 20, 'all'],
+                    showPageSizeSelector: true,
+                    showInfo: true,
+                    showNavigationButtons: true,
+                },
+                searchPanel: {
+                    highlightCaseSensitive: false,
+                    highlightSearchText: true,
+                    placeholder: "Search...",
+                    searchVisibleColumnsOnly: false,
+                    text: "",
+                    visible: true,
+                    width: 160
+                },
+                filterRow: {
+                    visible: true,
+                    applyFilter: 'auto',
+                },
+                headerFilter: {
+                    visible: true,
+                },
+                editing: {
+                    mode: 'popup',
+                    useIcons: true,
+                    allowUpdating: true,
+                    allowAdding: true,
+                    allowDeleting: true,
+                    confirmDelete: false,
+                    popup: {
+                        title: 'Yeni & Güncelleme Formu',
+                        showTitle: true,
+                        width: 700,
+                        height: 525,
+                    },
+                    form: {
+                        items: [{
+                            itemType: 'group',
+                            colCount: 1,
+                            colSpan: 2,
+                            items: [
+                                'Name',
+                                {
+                                    dataField: 'Description',
+                                    editorType: 'dxTextArea',
+                                    colSpan: 2,
+                                    editorOptions: {
+                                        height: 100,
+                                    },
+                                },
+                                {
+                                    itemType: 'group',
+                                    colCount: 2,
+                                    colSpan: 2,
+                                    disabled: true,
+                                    caption: 'Tarih',
+                                    items: ['CreatedDate', 'UpdatedDate'],
+                                },
+                                {
+                                    dataField: 'Active',
+                                    editorType: 'dxCheckBox',
+                                },
+                            ],
+                        },
+                        ],
+                    },
+                },
+                columns: [
+                    {
+                        dataField: 'Name',
+                        caption: 'İsim',
+                    },
+                    {
+                        dataField: 'Description',
+                        caption: 'Açıklama',
+                    },
+                    {
+                        dataField: 'Active',
+                        caption: 'Aktif',
+                        datatype: 'boolean',
+                    },
+                    {
+                        dataField: 'CreatedDate',
+                        caption: 'Oluşturma Tarihi',
+                        dataType: "date",
+                    },
+                    {
+                        dataField: 'UpdatedDate',
+                        caption: 'Düzenleme Tarihi',
+                        dataType: "date",
+                    },
+                ],
+                onRowInserting: function (e) {
+                    const deferred = $.Deferred();
+                    const promptPromise = DevExpress.ui.dialog.confirm("Emin misin?", "Değişiklikleri onayla");
+                    promptPromise.done((dialogResult) => {
+                        if (dialogResult) {
+                            $.ajax({
+                                url: "@Url.Action("DXInsert","Category")",
+                                dataType: "json",
+                                type: 'POST',
+                                contentType: "application/json; charset=utf-8",
+                                data: JSON.stringify(e.data),
+                                beforeSend: function () {
+                                    KTApp.block('.dx-overlay-content', {
+                                        overlayColor: '#000000',
+                                        state: 'danger',
+                                        message: 'Bekleyiniz...'
+                                    });
+                                },
+                                success: function (validationResult) {
+                                    if (validationResult.errorText) {
+                                        deferred.reject(validationResult.errorText);
+                                    } else {
+                                        deferred.resolve(false);
+                                        KTApp.unblock('.dx-overlay-content');
+                                        Swal.fire("Başarılı!", "Kaydetme işlemi başarılı.", "success");
+                                    }
+                                },
+                                error: function () {
+                                    deferred.reject("Kaydetme işleminde hata oluştu.");
+                                },
+                            });
+                        } else {
+                            deferred.resolve(true);
+                        }
+                    });
+                    e.cancel = deferred.promise();
+                },
+                onRowUpdating: function (e) {
+                    const deferred = $.Deferred();
+                    const promptPromise = DevExpress.ui.dialog.confirm("Emin misin?", "Değişiklikleri onayla");
+                    promptPromise.done((dialogResult) => {
+                        if (dialogResult) {
+                            $.ajax({
+                                url: "@Url.Action("DXUpdate","Category")",
+                                dataType: "json",
+                                type: 'POST',
+                                contentType: "application/json; charset=utf-8",
+                                data: JSON.stringify($.extend(e.oldData, e.newData)),
+                                beforeSend: function () {
+                                    KTApp.block('.dx-overlay-content', {
+                                        overlayColor: '#000000',
+                                        state: 'danger',
+                                        message: 'Bekleyiniz...'
+                                    });
+                                },
+                                success: function (validationResult) {
+                                    if (validationResult.errorText) {
+                                        deferred.reject(validationResult.errorText);
+                                    } else {
+                                        deferred.resolve(false);
+                                        KTApp.unblock('.dx-overlay-content');
+                                        Swal.fire("Başarılı!", "Kaydetme işlemi başarılı.", "success");
+                                    }
+                                },
+                                error: function () {
+                                    deferred.reject("Kaydetme işleminde hata oluştu.");
+                                },
+                            });
+                        } else {
+                            deferred.resolve(true);
+                        }
+                    });
+                    e.cancel = deferred.promise();
+                },
+                onRowRemoving: function (e) {
+                    const deferred = $.Deferred();
+                    const promptPromise = DevExpress.ui.dialog.confirm("Emin misin?", "Değişiklikleri onayla");
+                    promptPromise.done((dialogResult) => {
+                        if (dialogResult) {
+                            $.ajax({
+                                url: "@Url.Action("DXRemove","Category")",
+                                dataType: "json",
+                                type: 'POST',
+                                contentType: "application/json; charset=utf-8",
+                                data: JSON.stringify(e.data),
+                                beforeSend: function () {
+                                    KTApp.block('.dx-overlay-content', {
+                                        overlayColor: '#000000',
+                                        state: 'danger',
+                                        message: 'Bekleyiniz...'
+                                    });
+                                },
+                                success: function (validationResult) {
+                                    if (validationResult.errorText) {
+                                        deferred.reject(validationResult.errorText);
+                                    } else {
+                                        deferred.resolve(false);
+                                        KTApp.unblock('.dx-overlay-content');
+                                        Swal.fire("Başarılı!", "Kaydetme işlemi başarılı.", "success");
+                                    }
+                                },
+                                error: function () {
+                                    deferred.reject("Kaydetme işleminde hata oluştu.");
+                                },
+                            });
+                        } else {
+                            deferred.resolve(true);
+                        }
+                    });
+                    e.cancel = deferred.promise();
+                },
+                showBorders: true,
+            }).dxDataGrid('instance');
+        }
+        function bind2() {
+            $('#gridContainer').dxDataGrid({
+                dataSource: new DevExpress.data.DataSource({
+                    key: "Id",
+                    load: function (loadOptions) {
+                        return $.getJSON(`@Url.Action("GetJsonData","Category")`)
+                            .fail(function () { throw "Data loading error" });
+                    },
+                    insert: function (data) {
+                        const deferred = $.Deferred();
+                        const promptPromise = DevExpress.ui.dialog.confirm("Emin misin?", "Değişiklikleri onayla");
+                        promptPromise.done((dialogResult) => {
+                            if (dialogResult) {
+                                $.ajax({
+                                    url: "@Url.Action("DXInsert","Category")",
+                                    dataType: "json",
+                                    type: 'POST',
+                                    contentType: "application/json; charset=utf-8",
+                                    data: JSON.stringify(data),
+                                    beforeSend: function () {
+                                        KTApp.block('.dx-overlay-content', {
+                                            overlayColor: '#000000',
+                                            state: 'danger',
+                                            message: 'Bekleyiniz...'
+                                        });
+                                    },
+                                    success: function (validationResult) {
+                                        if (validationResult.errorText) {
+                                            deferred.reject(validationResult.errorText);
+                                        } else {
+                                            deferred.resolve(false);
+                                            KTApp.unblock('.dx-overlay-content');
+                                            Swal.fire("Başarılı!", "Kaydetme işlemi başarılı.", "success");
+                                            bind2();
+                                        }
+                                    },
+                                    error: function () {
+                                        deferred.reject("Kaydetme işleminde hata oluştu.");
+                                    },
+                                });
+                            } else {
+                                deferred.resolve(true);
+                            }
+                        });
+                        // e.cancel = deferred.promise();
+                    },
+                    update: function (id, newData) {
+                        const deferred = $.Deferred();
+                        const promptPromise = DevExpress.ui.dialog.confirm("Emin misin?", "Değişiklikleri onayla");
+                        promptPromise.done((dialogResult) => {
+                            if (dialogResult) {
+                                $.ajax({
+                                    url: "@Url.Action("DXUpdate","Category")",
+                                    dataType: "json",
+                                    type: 'POST',
+                                    contentType: "application/json; charset=utf-8",
+                                    data: JSON.stringify(newData),
+                                    beforeSend: function () {
+                                        KTApp.block('.dx-overlay-content', {
+                                            overlayColor: '#000000',
+                                            state: 'danger',
+                                            message: 'Bekleyiniz...'
+                                        });
+                                    },
+                                    success: function (validationResult) {
+                                        if (validationResult.errorText) {
+                                            deferred.reject(validationResult.errorText);
+                                        } else {
+                                            deferred.resolve(false);
+                                            KTApp.unblock('.dx-overlay-content');
+                                            Swal.fire("Başarılı!", "Kaydetme işlemi başarılı.", "success");
+                                        }
+                                    },
+                                    error: function () {
+                                        deferred.reject("Kaydetme işleminde hata oluştu.");
+                                    },
+                                });
+                            } else {
+                                deferred.resolve(true);
+                            }
+                        });
+                        //e.cancel = deferred.promise();
+                    },
+                    remove: function (data) {
+                        console.log(data);
+                        const deferred = $.Deferred();
+                        const promptPromise = DevExpress.ui.dialog.confirm("Emin misin?", "Değişiklikleri onayla");
+                        promptPromise.done((dialogResult) => {
+                            if (dialogResult) {
+                                $.ajax({
+                                    url: "@Url.Action("DXRemove","Category")",
+                                    dataType: "json",
+                                    type: 'POST',
+                                    contentType: "application/json; charset=utf-8",
+                                    data: JSON.stringify(data),
+                                    beforeSend: function () {
+                                        KTApp.block('.dx-overlay-content', {
+                                            overlayColor: '#000000',
+                                            state: 'danger',
+                                            message: 'Bekleyiniz...'
+                                        });
+                                    },
+                                    success: function (validationResult) {
+                                        if (validationResult.errorText) {
+                                            deferred.reject(validationResult.errorText);
+                                        } else {
+                                            deferred.resolve(false);
+                                            KTApp.unblock('.dx-overlay-content');
+                                            Swal.fire("Başarılı!", "Kaydetme işlemi başarılı.", "success");
+                                            bind2();
+                                        }
+                                    },
+                                    error: function () {
+                                        deferred.reject("Kaydetme işleminde hata oluştu.");
+                                    },
+                                });
+                            } else {
+                                deferred.resolve(true);
+                            }
+                        });
+                        //e.cancel = deferred.promise();
+                    }
+                }),
+                onRowUpdating: function (options) {
+                    options.newData = $.extend({}, options.oldData, options.newData);
+                    // non-jQuery
+                    options.newData = { ...options.oldData, ...options.newData };
+                }
+                        scrolling: {
+                    rowRenderingMode: 'virtual',
+                },
+                paging: {
+                    pageSize: 10,
+                },
+                pager: {
+                    visible: true,
+                    allowedPageSizes: [10, 20, 'all'],
+                    showPageSizeSelector: true,
+                    showInfo: true,
+                    showNavigationButtons: true,
+                },
+                searchPanel: {
+                    highlightCaseSensitive: false,
+                    highlightSearchText: true,
+                    placeholder: "Search...",
+                    searchVisibleColumnsOnly: false,
+                    text: "",
+                    visible: true,
+                    width: 160
+                },
+                filterRow: {
+                    visible: true,
+                    applyFilter: 'auto',
+                },
+                headerFilter: {
+                    visible: true,
+                },
+                editing: {
+                    mode: 'popup',
+                    useIcons: true,
+                    allowUpdating: true,
+                    allowAdding: true,
+                    allowDeleting: true,
+                    confirmDelete: false,
+                    popup: {
+                        title: 'Yeni & Güncelleme Formu',
+                        showTitle: true,
+                        width: 700,
+                        height: 525,
+                    },
+                    form: {
+                        items: [{
+                            itemType: 'group',
+                            colCount: 1,
+                            colSpan: 2,
+                            items: [
+                                'Name',
+                                {
+                                    dataField: 'Description',
+                                    editorType: 'dxTextArea',
+                                    colSpan: 2,
+                                    editorOptions: {
+                                        height: 100,
+                                    },
+                                },
+                                {
+                                    itemType: 'group',
+                                    colCount: 2,
+                                    colSpan: 2,
+                                    disabled: true,
+                                    caption: 'Tarih',
+                                    items: ['CreatedDate', 'UpdatedDate'],
+                                },
+                                {
+                                    dataField: 'Active',
+                                    editorType: 'dxCheckBox',
+                                },
+                            ],
+                        },
+                        ],
+                    },
+                },
+                columns: [
+                    {
+                        dataField: 'Name',
+                        caption: 'İsim',
+                    },
+                    {
+                        dataField: 'Description',
+                        caption: 'Açıklama',
+                    },
+                    {
+                        dataField: 'Active',
+                        caption: 'Aktif',
+                        datatype: 'boolean',
+                    },
+                    {
+                        dataField: 'CreatedDate',
+                        caption: 'Oluşturma Tarihi',
+                        dataType: "date",
+                        sortOrder: 'desc',
+                    },
+                    {
+                        dataField: 'UpdatedDate',
+                        caption: 'Düzenleme Tarihi',
+                        dataType: "date",
+                    },
+                ],
+                showBorders: true,
+            });
+        }
+    </script>
+}
