@@ -21,6 +21,11 @@ namespace RestaurantManagement.Application
         IRoleRepository RoleRepository { get; }
         ISupplierRepository SupplierRepository { get; }
         IWholesaleRepository WholesaleRepository { get; }
+
+        ISectionRepository SectionRepository { get; }
+        ITopMenuRepository TopMenuRepository { get; }
+        ISubMenuRepository SubMenuRepository { get; }
+
         int SaveChanges();
         Task<int> SaveChangesAsync();
     }

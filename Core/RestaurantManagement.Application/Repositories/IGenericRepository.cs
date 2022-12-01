@@ -2,6 +2,7 @@
 using RestaurantManagement.Domain.Entities;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -80,6 +81,10 @@ namespace RestaurantManagement.Application.Repositories
 
         bool BulkDeleteById(List<string> ids);
         bool BulkDeleteById(Expression<Func<T, bool>> expression);
+        #endregion
+        #region FromSql
+
+        IQueryable<T> FromSql(FormattableString sql);
         #endregion
     }
 }

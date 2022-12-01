@@ -32,6 +32,11 @@ namespace RestaurantManagement.Application
         public ISupplierRepository? _SupplierRepository;
         public IWholesaleRepository? _WholesaleRepository;
 
+        public ISectionRepository? _SectionRepository;
+        public ITopMenuRepository? _TopMenuRepository;
+        public ISubMenuRepository? _SubMenuRepository;
+
+
         public ICategoryRepository CategoryRepository => _CategoryRepository ?? (_CategoryRepository = new CategoryRepository(context));
 
         public IEmployeeRepository EmployeeRepository => _EmployeeRepository ?? (_EmployeeRepository = new EmployeeRepository(context));
@@ -44,7 +49,7 @@ namespace RestaurantManagement.Application
 
         public IOrderTypeRepository OrderTypeRepository => _OrderTypeRepository ?? (_OrderTypeRepository = new OrderTypeRepository(context));
 
-        public IProcessRepository ProcessRepository => _ProcessRepository ?? (_ProcessRepository = new ProcessRepository(context)); 
+        public IProcessRepository ProcessRepository => _ProcessRepository ?? (_ProcessRepository = new ProcessRepository(context));
 
         public IProductRepository ProductRepository => _ProductRepository ?? (_ProductRepository = new ProductRepository(context));
 
@@ -55,6 +60,12 @@ namespace RestaurantManagement.Application
         public ISupplierRepository SupplierRepository => _SupplierRepository ?? (_SupplierRepository = new SupplierRepository(context));
 
         public IWholesaleRepository WholesaleRepository => _WholesaleRepository ?? (_WholesaleRepository = new WholesaleRepository(context));
+
+        public ISectionRepository SectionRepository => _SectionRepository ?? (_SectionRepository = new SectionRepository(context));
+
+        public ITopMenuRepository TopMenuRepository => _TopMenuRepository ?? (_TopMenuRepository = new TopMenuRepository(context));
+
+        public ISubMenuRepository SubMenuRepository => _SubMenuRepository ?? (_SubMenuRepository = new SubMenuRepository(context));
 
         public int SaveChanges()
         {

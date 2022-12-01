@@ -219,6 +219,12 @@ namespace RestaurantManagement.Application.Repositories
             return RemoveRange(data);
 
         }
+
+        public IQueryable<T> FromSql(FormattableString sql)
+        {
+            return _context.Set<T>().FromSql<T>(sql);
+        }
+
         #endregion
     }
 }

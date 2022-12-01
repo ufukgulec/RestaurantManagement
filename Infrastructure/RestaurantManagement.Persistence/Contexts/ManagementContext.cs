@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RestaurantManagement.Domain.AppEntities;
 using RestaurantManagement.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace RestaurantManagement.Persistence.Contexts
     {
         public ManagementContext(DbContextOptions options) : base(options)
         {
-
+            //this.ChangeTracker.LazyLoadingEnabled = false;
         }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Employee> Employees { get; set; }
@@ -27,12 +28,19 @@ namespace RestaurantManagement.Persistence.Contexts
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<Wholesale> Wholesales { get; set; }
 
+        public DbSet<MenuSection> MenuSections { get; set; }
+        public DbSet<TopMenu> TopMenus { get; set; }
+        public DbSet<SubMenu> SubMenus { get; set; }
+
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
                 var conn = "server=UFUK;database=ManagementDB;integrated security=true;TrustServerCertificate=True;";
-                optionsBuilder.UseSqlServer(conn);
+                optionsBuilder
+                    //.UseLazyLoadingProxies(false)
+                    .UseSqlServer(conn);
             }
             //optionsBuilder.LogTo(message => Console.WriteLine(message));
         }
@@ -65,7 +73,7 @@ namespace RestaurantManagement.Persistence.Contexts
             var modified = ChangeTracker.Entries()
                                     .Where(i => i.State == EntityState.Modified)
                                     .Select(i => (BaseEntity)i.Entity);
-            if (added.Count()>0)
+            if (added.Count() > 0)
             {
                 PrepareAddedEntities(added);
             }
@@ -73,7 +81,7 @@ namespace RestaurantManagement.Persistence.Contexts
             {
                 PrepareModifiedEntities(modified);
             }
-            
+
         }
         private void PrepareAddedEntities(IEnumerable<BaseEntity> entities)
         {

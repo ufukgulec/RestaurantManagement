@@ -1,14 +1,14 @@
-using Microsoft.AspNetCore.OData;
 using RestaurantManagement.Persistence;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
+
 builder.Services.AddControllersWithViews()
-    .AddOData(conf =>
-    {
-        conf.EnableQueryFeatures();
-    });
+    .AddJsonOptions(c => c.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
+
 builder.Services.AddPersistenceServicesAsync(builder.Configuration);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

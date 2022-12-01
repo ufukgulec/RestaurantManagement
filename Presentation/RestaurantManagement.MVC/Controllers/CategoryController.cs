@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OData.Query;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using NuGet.Protocol;
@@ -13,11 +12,11 @@ namespace RestaurantManagement.MVC.Controllers
 {
     public class CategoryController : BaseController
     {
-        private readonly ICategoryRepository _categoryRepository;
+        private readonly ICategoryRepository _service;
 
         public CategoryController(IUnitOfWork service) : base(service)
         {
-            _categoryRepository = service.CategoryRepository;
+            _service = service.CategoryRepository;
         }
         public IActionResult Index()
         {
@@ -25,13 +24,13 @@ namespace RestaurantManagement.MVC.Controllers
         }
         public async Task<IActionResult> List()
         {
-            var data = await _categoryRepository.GetListAsync(default, false);
+            var data = await _service.GetListAsync(default, false);
             return View(data);
         }
         [HttpPost]
         public async Task<IActionResult> DXInsert([FromBody] Category category)
         {
-            var result = await _categoryRepository.AddAsync(category);
+            var result = await _service.AddAsync(category);
             if (result)
             {
                 return Ok(category);
@@ -45,7 +44,7 @@ namespace RestaurantManagement.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> DXUpdate([FromBody] Category category)
         {
-            var result = await _categoryRepository.Update(category);
+            var result = await _service.Update(category);
             if (result)
             {
                 return Ok(category);
@@ -57,9 +56,9 @@ namespace RestaurantManagement.MVC.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> DXRemove([FromBody] string Id)
+        public async Task<IActionResult> DXRemove([FromBody] Category category)
         {
-            var result = await _categoryRepository.Remove(Id);
+            var result = await _service.Remove(category);
             if (result)
             {
                 return Ok(new Category());
@@ -71,7 +70,6 @@ namespace RestaurantManagement.MVC.Controllers
 
         }
         [HttpGet]
-        [EnableQuery]
         public IActionResult GetJsonData()
         {
             var settings = new JsonSerializerOptions
@@ -79,7 +77,7 @@ namespace RestaurantManagement.MVC.Controllers
                 PropertyNamingPolicy = null,
             };
 
-            var data = _categoryRepository.GetAll(default, false);
+            var data = _service.GetAll(default, false);
 
             return Json(data, settings);
         }

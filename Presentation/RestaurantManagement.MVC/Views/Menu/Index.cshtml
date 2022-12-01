@@ -1,0 +1,175 @@
+﻿@using Newtonsoft.Json
+@using RestaurantManagement.Domain.AppEntities
+@using RestaurantManagement.MVC.Controllers
+@model List<MenuData>
+@{
+    ViewData["Title"] = "Index";
+    JsonSerializerSettings settings = new JsonSerializerSettings
+            {
+                PreserveReferencesHandling = PreserveReferencesHandling.Objects
+            };
+    var serializer = JsonSerializer.Create(settings);
+}
+@section Styles{
+    <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/22.1.6/css/dx.common.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/22.1.6/css/dx.light.css" />
+}
+    <div class="d-flex flex-column-fluid">
+        <div class="container">
+            <div class="card card-custom">
+                <div class="card-body">
+                    <div id="menus"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @section Scripts{
+    <script src="https://cdn3.devexpress.com/jslib/22.1.6/js/dx.all.js"></script>
+    <script>
+        function getData() {
+            return @Html.Raw(JsonConvert.SerializeObject(Model,settings));
+        }
+        var section = false;
+        $(() => {
+            const treeList = $('#menus').dxTreeList({
+                dataSource: getData(),
+                keyExpr: 'Id',
+                parentIdExpr: 'ParentId',
+                showRowLines: true,
+                showBorders: true,
+                columnAutoWidth: true,
+                rowDragging: {
+                    allowDropInsideItem: false,
+                    allowReordering: true,
+                    onDragChange(e) {
+                        const visibleRows = treeList.getVisibleRows();
+                        const sourceNode = treeList.getNodeByKey(e.itemData.Id);
+                        let targetNode = visibleRows[e.toIndex].node;
+
+                        while (targetNode && targetNode.data) {
+                            if (targetNode.data.Id === sourceNode.data.Id) {
+                                e.cancel = true;
+                                break;
+                            }
+                            targetNode = targetNode.parent;
+                        }
+                    },
+                    onReorder(e) {
+                        const visibleRows = e.component.getVisibleRows();
+
+                        if (e.dropInsideItem) {
+                            e.itemData.Id = visibleRows[e.toIndex].key;
+                        } else {
+                            const sourceData = e.itemData;
+                            const toIndex = e.fromIndex > e.toIndex ? e.toIndex - 1 : e.toIndex;
+                            let targetData = toIndex >= 0 ? visibleRows[toIndex].node.data : null;
+
+                            if (targetData && e.component.isRowExpanded(targetData.Id)) {
+                                sourceData.Id = targetData.Id;
+                                targetData = null;
+                            } else {
+                                sourceData.Id = targetData ? targetData.Id : e.component.option('rootValue');
+                            }
+
+                            const sourceIndex = getData().indexOf(sourceData);
+                            getData().splice(sourceIndex, 1);
+
+                            const targetIndex = getData().indexOf(targetData) + 1;
+                            getData().splice(targetIndex, 0, sourceData);
+                        }
+
+                        e.component.refresh();
+                    },
+                },
+                editing: {
+                    mode: 'popup',
+                    allowUpdating: true,
+                    allowDeleting: true,
+                    allowAdding: true,
+                    popup: {
+                        title: 'Employee Info',
+                        showTitle: true,
+                        width: 700,
+                    },
+                },
+                columns: [
+                    {
+                        dataField: 'Caption',
+                        validationRules: [{ type: 'required' }],
+                    },
+                    {
+                        dataField: 'Link',
+                        validationRules: [{ type: 'required' }],
+                    },
+                    {
+                        type: 'buttons',
+                        buttons: ['edit',
+                            {
+                                name: "add",
+                                visible: function (e) {
+                                    //console.log(e);
+                                    if (e.row.level < 2)
+                                        return true;
+                                },
+                                hint: "My Command",
+
+                            }
+                        ],
+                    },
+                ],
+                onEditorPreparing(e) {
+                    //console.log(e);
+                    //if (e.dataField === 'Link') {
+                    //    e.cancel = true;
+                    //}
+                },
+                onInitNewRow(e) {
+                    section = true;
+                },
+                // expandedRowKeys: [1, 2, 3, 4, 5],
+                onRowInserting: function (e) {
+                    if (e.data.ParentId == 0) {
+                        e.data.isSection = true;
+                        e.data.isTopMenu = false;
+                    }
+                    const deferred = $.Deferred();
+                    const promptPromise = DevExpress.ui.dialog.confirm("Emin misin?", "Değişiklikleri onayla");
+                    promptPromise.done((dialogResult) => {
+                        if (dialogResult) {
+                            $.ajax({
+                                url: "@Url.Action("DXInsert","Menu")",
+                                dataType: "json",
+                                type: 'POST',
+                                contentType: "application/json; charset=utf-8",
+                                data: JSON.stringify(e.data),
+                                beforeSend: function () {
+                                    KTApp.block('.dx-overlay-content', {
+                                        overlayColor: '#000000',
+                                        state: 'danger',
+                                        message: 'Bekleyiniz...'
+                                    });
+                                },
+                                success: function (validationResult) {
+                                    if (validationResult.errorText) {
+                                        deferred.reject(validationResult.errorText);
+                                    } else {
+                                        deferred.resolve(false);
+                                        KTApp.unblock('.dx-overlay-content');
+                                        Swal.fire("Başarılı!", "Kaydetme işlemi başarılı.", "success");
+                                    }
+                                },
+                                error: function () {
+                                    deferred.reject("Kaydetme işleminde hata oluştu.");
+                                },
+                            });
+                        } else {
+                            deferred.resolve(true);
+                        }
+                    });
+                    e.cancel = deferred.promise();
+                }
+            }).dxTreeList('instance');
+        });
+
+    </script>
+}

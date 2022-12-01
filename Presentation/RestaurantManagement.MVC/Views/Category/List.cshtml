@@ -10,11 +10,11 @@
     <div class="d-flex flex-column-fluid">
         <div class="container">
             <div class="card card-custom">
-                <div class="card-body">
-                    <div id="selectStatus"></div>
+                <div class="card-body" id="drawer">
                     <div id="gridContainer"></div>
                 </div>
             </div>
+            <div id="sqlButton"></div>
         </div>
     </div>
     @section Scripts{
@@ -23,17 +23,23 @@
     <script>
         function getData() {
             return @Html.Raw(JsonConvert.SerializeObject(Model));
-
         }
         $(() => {
-            bind2();
+            bind1();
+
+            $('#sqlButton').dxSpeedDialAction({
+                label: 'SQL Editor',
+                icon: 'edit',
+                index: 1,
+                onClick() {
+                    drawer.toggle();
+                },
+            }).dxSpeedDialAction('instance');
+
         });
         function bind1() {
             $('#gridContainer').dxDataGrid({
                 dataSource: getData(),
-                scrolling: {
-                    rowRenderingMode: 'virtual',
-                },
                 paging: {
                     pageSize: 10,
                 },
@@ -43,6 +49,9 @@
                     showPageSizeSelector: true,
                     showInfo: true,
                     showNavigationButtons: true,
+                },
+                scrolling: {
+                    rowRenderingMode: 'virtual',
                 },
                 searchPanel: {
                     highlightCaseSensitive: false,
@@ -123,14 +132,19 @@
                         dataField: 'CreatedDate',
                         caption: 'Oluşturma Tarihi',
                         dataType: "date",
+                        value: new Date(),
                     },
                     {
                         dataField: 'UpdatedDate',
                         caption: 'Düzenleme Tarihi',
                         dataType: "date",
+                        value: new Date(),
+                        sortOrder: 'desc',
                     },
                 ],
                 onRowInserting: function (e) {
+                    e.data.CreatedDate = new Date();
+                    e.data.UpdatedDate = new Date();
                     const deferred = $.Deferred();
                     const promptPromise = DevExpress.ui.dialog.confirm("Emin misin?", "Değişiklikleri onayla");
                     promptPromise.done((dialogResult) => {
@@ -169,6 +183,8 @@
                 },
                 onRowUpdating: function (e) {
                     const deferred = $.Deferred();
+                    e.newData.UpdatedDate = new Date();
+                    e.oldData.UpdatedDate = new Date();
                     const promptPromise = DevExpress.ui.dialog.confirm("Emin misin?", "Değişiklikleri onayla");
                     promptPromise.done((dialogResult) => {
                         if (dialogResult) {
@@ -371,8 +387,8 @@
                     options.newData = $.extend({}, options.oldData, options.newData);
                     // non-jQuery
                     options.newData = { ...options.oldData, ...options.newData };
-                }
-                        scrolling: {
+                },
+                scrolling: {
                     rowRenderingMode: 'virtual',
                 },
                 paging: {
@@ -446,6 +462,9 @@
                         ],
                     },
                 },
+                sorting: {
+                    mode: 'multiple',
+                },
                 columns: [
                     {
                         dataField: 'Name',
@@ -470,6 +489,7 @@
                         dataField: 'UpdatedDate',
                         caption: 'Düzenleme Tarihi',
                         dataType: "date",
+                        sortOrder: 'desc',
                     },
                 ],
                 showBorders: true,
