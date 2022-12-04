@@ -1,0 +1,253 @@
+﻿@using Newtonsoft.Json
+@{
+    ViewData["Title"] = "Index";
+}
+@section Styles{
+    <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/22.1.6/css/dx.common.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/22.1.6/css/dx.light.css" />
+    <style>
+                .editor {
+                    font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+                    font-size: 14px;
+                    outline: 0;
+                    margin: 0;
+                    display: block;
+                    padding: 5px;
+                    width: 100%;
+                    border: 0;
+                    border-top: 1px dashed #ddd;
+                    border-bottom: 1px dashed #ddd;
+                    border-radius: 0;
+                    box-shadow: none;
+                    background: #eee;
+                    height: inherit;
+                    resize: none;
+                    font-weight: bold;
+        /*            text-transform: uppercase;*/
+                }
+    </style>
+}
+    <div class="d-flex flex-column-fluid">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-5">
+                    <div class="card card-custom card-collapsed" data-card="true" id="kt_card_4">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <h3 class="card-label">Tablolar</h3>
+                            </div>
+                            <div class="card-toolbar">
+                                <a href="#" class="btn btn-icon btn-sm btn-light-primary mr-1" data-card-tool="toggle">
+                                    <i class="ki ki-arrow-down icon-nm"></i>
+                                </a>
+                                <a href="#" class="btn btn-icon btn-sm btn-light-success mr-1" data-card-tool="reload">
+                                    <i class="ki ki-reload icon-nm"></i>
+                                </a>
+                                <a href="#" class="btn btn-icon btn-sm btn-light-danger" data-card-tool="remove">
+                                    <i class="ki ki-close icon-nm"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="scroll scroll-pull" id="db" data-scroll="true" data-wheel-propagation="true" style="height: 240px">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8 mb-5">
+                    <div class="card card-custom card-collapsed sql" data-card="true" id="kt_card_3">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <h3 class="card-label">Sorgu</h3>
+                            </div>
+                            <div class="card-toolbar">
+                                <a href="#" class="btn btn-icon btn-sm btn-light-primary mr-1" data-card-tool="toggle">
+                                    <i class="ki ki-arrow-down icon-nm"></i>
+                                </a>
+                                <a href="#" class="btn btn-icon btn-sm btn-light-success mr-1" data-card-tool="reload">
+                                    <i class="ki ki-reload icon-nm"></i>
+                                </a>
+                                <a href="#" class="btn btn-icon btn-sm btn-light-danger mr-1" data-card-tool="remove">
+                                    <i class="ki ki-close icon-nm"></i>
+                                </a>
+                                <a href="#" class="btn btn-sm btn-icon btn-light-warning mr-1">
+                                    <i class="fas fa-save"></i>
+                                </a>
+                                <a href="#" class="btn btn-sm btn-icon btn-light-success mr-1" onclick="sqlRun(document.getElementById('SqlContent').value)">
+                                    <i class="fas fa-caret-square-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="scroll scroll-pull" data-scroll="true" data-wheel-propagation="true" style="height: 240px">
+                                <textarea id="SqlContent" class="editor"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="card card-custom">
+                        <div class="card-header ribbon ribbon-top">
+                            <div class="ribbon-target bg-danger" id="count" style="top: -2px; right: 20px;">Row Count</div>
+                            <h3 class="card-title">
+                                Sql Editor
+                            </h3>
+
+                        </div>
+
+                        <div class="card-body">
+                            <div class="scroll scroll-pull" id="db" data-scroll="true" data-wheel-propagation="true" style="height: 240px">
+                                <div id="gridContainer"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+
+        </div>
+    </div>
+    @section Scripts{
+    <script src="https://cdn3.devexpress.com/jslib/22.1.6/js/dx.all.js"></script>
+    <script>
+        jQuery(document).ready(function () {
+            DBtables();
+        });
+        var DBtables = function () {
+            // This card is lazy initialized using data-card="true" attribute. You can access to the card object as shown below and override its behavior
+            var card = new KTCard('kt_card_4');
+
+            card.on('beforeExpand', function (card) {
+                if (document.getElementById("simpleList") == null) {
+                    KTApp.block(card.getSelf(), {
+                        type: 'loader',
+                        state: 'primary',
+                        message: 'Lütfen Bekleyiniz...'
+                    });
+                    $.get("/Editor/getDBTable", function (data, status) {
+
+                        DBtablesAppend(JSON.parse(data));
+                    });
+                    KTApp.unblock(card.getSelf());
+                }
+            });
+
+            // Remove event handlers
+            card.on('beforeRemove', function (card) {
+                toastr.info('Before remove event fired!');
+
+                return confirm('Are you sure to remove this card ?');  // remove card after user confirmation
+            });
+
+            card.on('afterRemove', function (card) {
+                setTimeout(function () {
+                    toastr.warning('After remove event fired!');
+                }, 2000);
+            });
+
+            // Reload event handlers
+            card.on('reload', function (card) {
+                KTApp.block(card.getSelf(), {
+                    type: 'loader',
+                    state: 'primary',
+                    message: 'Lütfen Bekleyiniz...'
+                });
+                $.get("/Editor/getDBTable", function (data, status) {
+                    DBtablesAppend(JSON.parse(data));
+                });
+                KTApp.unblock(card.getSelf());
+            });
+        }
+        var DBtablesAppend = function (data) {
+            $("#simpleList").remove();
+            $("#db").append("<div id='simpleList'></div>");
+            $('#simpleList').dxList({
+                dataSource: data,
+                searchEnabled: true,
+                searchExpr: 'Name',
+                height: '100%',
+                grouped: true,
+                collapsibleGroups: true,
+                groupTemplate: briefTemplate,
+                items: [
+                    { itemProperty: "items" },
+                    // ...
+                ],
+                itemTemplate: function (data, index, element) {
+                    return index + 1 + " - " + data;
+
+                    // ===== or using the "element" parameter =====
+                    const $item = $("<div>").text(
+                        index + 1 + " - " + data
+                    );
+                    element.append($item);
+                },
+                onContentReady: function (e) {
+                    setTimeout(function () {
+                        var items = e.component.option("items");
+                        for (var i = 0; i < items.length; i++)
+                            e.component.collapseGroup(i);
+                    }, 50);
+                },
+                onItemClick: function (e) {
+                    console.log(e + "kolon");
+                },
+            });
+        }
+        var briefTemplate = function (groupData, groupIndex, groupElement) {
+            var groupElId = "groupEl" + groupIndex;
+            groupElement.append("<div id='" + groupElId + "'>"
+                + "Tablo: " + groupData.Name + "</div>");
+
+            $("#" + groupElId).on("click", function () {
+                alert(groupData.Name);
+            });
+        };
+
+        function sqlRun(query) {
+            if (query.length == 0) {
+                toastr.error('Boş sorguyu çalıştıramazsınız!');
+            } else {
+                const deferred = $.Deferred();
+                $.ajax({
+                    url: "@Url.Action("RunSql","Editor")",
+                    dataType: "json",
+                    type: 'POST',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(query),
+                    beforeSend: function () {
+                        KTApp.block('.sql', {
+                            overlayColor: '#000000',
+                            state: 'danger',
+                            message: 'Bekleyiniz...'
+                        });
+                    },
+                    success: function (validationResult) {
+                        if (validationResult.errorText) {
+                            deferred.reject(validationResult.errorText);
+                            alert(validationResult);
+                        } else {
+                            BindTable(JSON.parse(validationResult));
+                            KTApp.unblock('.sql');
+                            //Swal.fire("Başarılı!", "Kaydetme işlemi başarılı.", "success");
+                        }
+                    },
+                    error: function () {
+                        toastr.error('Hatalı sorgu!');
+                        KTApp.unblock('.sql');
+                        deferred.reject("Kaydetme işleminde hata oluştu.");
+                    },
+                });
+            }
+        }
+        function BindTable(data) {
+            $("#count").text("Row Count: " + data.length);
+            $('#gridContainer').dxDataGrid({
+                dataSource: data,
+                showBorders: true,
+            });
+        }
+
+
+    </script>
+}
