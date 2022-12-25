@@ -14,7 +14,6 @@
                     <div id="gridContainer"></div>
                 </div>
             </div>
-            <div id="sqlButton"></div>
         </div>
     </div>
     @section Scripts{
@@ -26,16 +25,6 @@
         }
         $(() => {
             bind1();
-
-            $('#sqlButton').dxSpeedDialAction({
-                label: 'SQL Editor',
-                icon: 'edit',
-                index: 1,
-                onClick() {
-                    drawer.toggle();
-                },
-            }).dxSpeedDialAction('instance');
-
         });
         function bind1() {
             $('#gridContainer').dxDataGrid({
@@ -171,8 +160,9 @@
                                         Swal.fire("Başarılı!", "Kaydetme işlemi başarılı.", "success");
                                     }
                                 },
-                                error: function () {
-                                    deferred.reject("Kaydetme işleminde hata oluştu.");
+                                error: function (validationResult) {
+                                    KTApp.unblock('.dx-overlay-content');
+                                    deferred.reject(validationResult.responseText);
                                 },
                             });
                         } else {
@@ -185,6 +175,9 @@
                     const deferred = $.Deferred();
                     e.newData.UpdatedDate = new Date();
                     e.oldData.UpdatedDate = new Date();
+
+                    var old = e.oldData.Name;
+
                     const promptPromise = DevExpress.ui.dialog.confirm("Emin misin?", "Değişiklikleri onayla");
                     promptPromise.done((dialogResult) => {
                         if (dialogResult) {
@@ -210,8 +203,11 @@
                                         Swal.fire("Başarılı!", "Kaydetme işlemi başarılı.", "success");
                                     }
                                 },
-                                error: function () {
-                                    deferred.reject("Kaydetme işleminde hata oluştu.");
+                                error: function (validationResult) {
+                                    console.log(validationResult);
+                                    e.oldData.Name = old;
+                                    KTApp.unblock('.dx-overlay-content');
+                                    deferred.reject(validationResult.responseText);
                                 },
                             });
                         } else {
@@ -247,8 +243,8 @@
                                         Swal.fire("Başarılı!", "Kaydetme işlemi başarılı.", "success");
                                     }
                                 },
-                                error: function () {
-                                    deferred.reject("Kaydetme işleminde hata oluştu.");
+                                error: function (validationResult) {
+                                    deferred.reject(validationResult.responseText);
                                 },
                             });
                         } else {

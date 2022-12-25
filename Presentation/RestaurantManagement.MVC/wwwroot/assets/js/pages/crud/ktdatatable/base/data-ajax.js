@@ -250,6 +250,5 @@ jQuery(document).ready(function() {
     KTDatatableRemoteAjaxDemo.init();
 });
 
-/******/ })()
-;
+})();
 //# sourceMappingURL=data-ajax.js.map

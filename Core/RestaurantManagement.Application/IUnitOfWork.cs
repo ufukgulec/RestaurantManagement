@@ -21,6 +21,8 @@ namespace RestaurantManagement.Application
         IRoleRepository RoleRepository { get; }
         ISupplierRepository SupplierRepository { get; }
         IWholesaleRepository WholesaleRepository { get; }
+        INotificationTypeRepository NotificationTypeRepository { get; }
+        INotificationRepository NotificationRepository { get; }
 
         ISectionRepository SectionRepository { get; }
         ITopMenuRepository TopMenuRepository { get; }

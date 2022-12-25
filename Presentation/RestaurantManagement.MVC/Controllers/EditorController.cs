@@ -62,5 +62,15 @@ ORDER BY TABLE_NAME";
             }
             return BadRequest();
         }
+        [HttpPost]
+        public IActionResult CreateView([FromBody] string query)
+        {
+            DataTable dataTable = _provider.GetData("CREATE VIEW Deneme AS " + query);
+            if (dataTable is not null)
+            {
+                return this.Json(JsonConvert.SerializeObject(dataTable));
+            }
+            return BadRequest();
+        }
     }
 }

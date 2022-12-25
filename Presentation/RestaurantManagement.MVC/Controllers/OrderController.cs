@@ -2,6 +2,7 @@
 using RestaurantManagement.Application.Repositories;
 using RestaurantManagement.Application;
 using RestaurantManagement.Domain.Entities;
+using Bogus.DataSets;
 
 namespace RestaurantManagement.MVC.Controllers
 {
@@ -14,8 +15,50 @@ namespace RestaurantManagement.MVC.Controllers
             _service = service.OrderRepository;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var OrderTypeIds = await service.OrderTypeRepository.GetListAsync();
+            var empIds = await service.EmployeeRepository.GetListAsync();
+            var prcIds = await service.ProcessRepository.GetListAsync();
+
+            Random random = new Random();
+            for (int i = 0; i < 50; i++)
+            {
+                int ot = random.Next(0, OrderTypeIds.Count);
+
+                Order order = new Order
+                {
+                    Active = true,
+                    CreatedDate = new DateTime(random.Next(2020, DateTime.Now.Year), random.Next(1, 12), random.Next(1, 30)),
+                    UpdatedDate = DateTime.Now,
+                    EmployeeId = empIds[random.Next(0, empIds.Count)].Id,
+                    OrderTypeId = OrderTypeIds[ot].Id,
+                    ProcessId = prcIds[random.Next(0, prcIds.Count)].Id,
+                    Name = DateTime.Now.ToString("ddMM") + "-SPR" + OrderTypeIds[ot].Name[0].ToString().ToUpper() + "-" + i.ToString().PadLeft(4, '0'),
+                };
+                await _service.AddAsync(order);
+
+            }
+            var ordIds = await service.OrderRepository.GetListAsync();
+            var prdIds = await service.ProductRepository.GetListAsync();
+
+            for (int i = 0; i < 100; i++)
+            {
+                int ot = random.Next(0, ordIds.Count);
+
+                OrderDetail orderDetail = new OrderDetail
+                {
+                    Active = true,
+                    OrderId = ordIds[ot].Id,
+                    CreatedDate = ordIds[ot].CreatedDate,
+                    UpdatedDate = ordIds[ot].UpdatedDate,
+                    ProductId = prdIds[random.Next(0, prdIds.Count)].Id,
+                    Description = "Deneme"
+
+                };
+                await service.OrderDetailRepository.AddAsync(orderDetail);
+            }
+
             return View();
         }
         public async Task<IActionResult> List()
@@ -31,6 +74,9 @@ namespace RestaurantManagement.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> DXInsert([FromBody] Order entity)
         {
+            var data = await _service.GetListAsync(x => x.OrderTypeId == entity.OrderTypeId);
+            var orderType = await service.OrderTypeRepository.GetByIdAsync(entity.OrderTypeId.ToString());
+            entity.Name = DateTime.Now.ToString("ddMM") + "-SPR" + orderType.Name[0].ToString().ToUpper() + "-" + data.Count.ToString().PadLeft(4, '0');
             var result = await _service.AddAsync(entity);
             if (result)
             {
@@ -48,6 +94,7 @@ namespace RestaurantManagement.MVC.Controllers
             var result = await _service.Update(entity);
             if (result)
             {
+
                 return Ok(entity);
             }
             else

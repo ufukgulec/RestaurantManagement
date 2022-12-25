@@ -27,6 +27,8 @@ namespace RestaurantManagement.Persistence.Contexts
         public DbSet<Role> Roles { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<Wholesale> Wholesales { get; set; }
+        public DbSet<NotificationType> NotificationTypes { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
 
         public DbSet<MenuSection> MenuSections { get; set; }
         public DbSet<TopMenu> TopMenus { get; set; }

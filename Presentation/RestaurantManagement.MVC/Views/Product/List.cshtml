@@ -1,5 +1,5 @@
 ﻿@using Newtonsoft.Json
-@model List<RestaurantManagement.Domain.Entities.Order>
+@model List<RestaurantManagement.Domain.Entities.Product>
 @{
     ViewData["Title"] = "Index";
     JsonSerializerSettings settings = new JsonSerializerSettings
@@ -24,7 +24,6 @@
     </div>
     @section Scripts{
     <script src="https://cdn3.devexpress.com/jslib/22.1.6/js/dx.all.js"></script>
-    <script src="https://unpkg.com/devextreme-aspnet-data@2.8.6/js/dx.aspnet.data.js"></script>
     <script>
         function getData() {
             return @Html.Raw(JsonConvert.SerializeObject(Model,settings));
@@ -84,11 +83,52 @@
                             colCount: 1,
                             colSpan: 2,
                             items: [
-                                'OrderTypeId', 'EmployeeId', 'ProcessId',
                                 {
-                                    dataField: 'Name',
-                                    caption: 'Sipariş Adı',
-                                    disabled: true,
+                                    itemType: 'group',
+                                    colCount: 2,
+                                    colSpan: 2,
+                                    items: ['Name', 'CategoryId'],
+                                },
+                                {
+                                    dataField: 'Description',
+                                    editorType: 'dxTextArea',
+                                    colSpan: 2,
+                                    editorOptions: {
+                                        height: 100,
+                                    },
+                                },
+                                'ImgUrl',
+                                {
+                                    itemType: 'group',
+                                    colCount: 2,
+                                    colSpan: 2,
+                                    items: [
+                                        {
+                                            dataField: 'Price',
+                                            editorType: 'dxNumberBox',
+                                            editorOptions: {
+                                                format: '#.##',
+                                                buttons: [{
+                                                    name: 'currency',
+                                                    location: 'after',
+                                                    options: {
+                                                        text: '₺',
+                                                        stylingMode: 'text',
+                                                        width: 32,
+                                                        elementAttr: {
+                                                            class: 'currency',
+                                                        },
+
+                                                    },
+                                                },
+                                                ],
+                                            },
+                                        },
+                                        {
+                                            dataField: 'Active',
+                                            editorType: 'dxCheckBox',
+                                        },
+                                    ],
                                 },
                                 {
                                     itemType: 'group',
@@ -98,10 +138,7 @@
                                     caption: 'Tarih',
                                     items: ['CreatedDate', 'UpdatedDate'],
                                 },
-                                {
-                                    dataField: 'Active',
-                                    editorType: 'dxCheckBox',
-                                },
+
                             ],
                         },
                         ],
@@ -109,48 +146,28 @@
                 },
                 columns: [
                     {
-                        dataField: 'OrderTypeId',
-                        caption: 'Sipariş Türü',
-                        width: 125,
-                        lookup: {
-                            dataSource: @Html.Raw(JsonConvert.SerializeObject(ViewBag.Types)),
-                            displayExpr: 'Name',
-                            valueExpr: 'Id',
-                        },
-                    },
-                    {
                         dataField: 'Name',
-                        caption: 'Sipariş Adı',
+                        caption: 'İsim',
                     },
                     {
-                        dataField: 'EmployeeId',
-                        caption: 'Siparişi Oluşturan',
+                        dataField: 'ImgUrl',
+                        caption: 'İsim',
+                        visible:false
+                    },
+                    {
+                        dataField: 'Description',
+                        caption: 'Açıklama',
+                    },
+                    {
+                        dataField: 'Price',
+                        caption: 'Fiyat',
+                    },
+                    {
+                        dataField: 'CategoryId',
+                        caption: 'Kategori',
                         width: 125,
                         lookup: {
-                            dataSource: @Html.Raw(JsonConvert.SerializeObject(ViewBag.Employee)),
-                            displayExpr: 'Fullname',
-                            valueExpr: 'Id',
-                        },
-                    },
-                    {
-                        dataField: 'Process.IconUrl',
-                        caption: 'Sembol',
-                        width: 100,
-                        allowFiltering: false,
-                        allowSorting: false,
-                        alignment: "center",
-                        cellTemplate(container, options) {
-                            $('<div>')
-                                .append($('<i>', { class: options.value }))
-                                .appendTo(container);
-                        },
-                    },
-                    {
-                        dataField: 'ProcessId',
-                        caption: 'Sipariş Adımı',
-                        width: 125,
-                        lookup: {
-                            dataSource: @Html.Raw(JsonConvert.SerializeObject(ViewBag.Process)),
+                            dataSource: @Html.Raw(JsonConvert.SerializeObject(ViewBag.Categories)),
                             displayExpr: 'Name',
                             valueExpr: 'Id',
                         },
@@ -182,7 +199,7 @@
                     promptPromise.done((dialogResult) => {
                         if (dialogResult) {
                             $.ajax({
-                                url: "@Url.Action("DXInsert","Order")",
+                                url: "@Url.Action("DXInsert","Product")",
                                 dataType: "json",
                                 type: 'POST',
                                 contentType: "application/json; charset=utf-8",
@@ -198,9 +215,6 @@
                                     if (validationResult.errorText) {
                                         deferred.reject(validationResult.errorText);
                                     } else {
-                                        //e.data.Name = validationResult.name;
-                                        console.log(validationResult);
-                                        //e.data.Process.IconUrl = validationResult.Process.IconUrl;
                                         deferred.resolve(false);
                                         KTApp.unblock('.dx-overlay-content');
                                         Swal.fire("Başarılı!", "Kaydetme işlemi başarılı.", "success");
@@ -219,15 +233,13 @@
                 onRowUpdating: function (e) {
                     const deferred = $.Deferred();
                     const promptPromise = DevExpress.ui.dialog.confirm("Emin misin?", "Değişiklikleri onayla");
-                    e.newData.Employee = null;
-                    e.newData.OrderType = null;
-                    e.newData.Process = null;
+                    e.newData.Role = null;
                     e.newData.UpdatedDate = new Date();
                     e.oldData.UpdatedDate = new Date();
                     promptPromise.done((dialogResult) => {
                         if (dialogResult) {
                             $.ajax({
-                                url: "@Url.Action("DXUpdate","Order")",
+                                url: "@Url.Action("DXUpdate","Product")",
                                 dataType: "json",
                                 type: 'POST',
                                 contentType: "application/json; charset=utf-8",
@@ -265,7 +277,7 @@
                     promptPromise.done((dialogResult) => {
                         if (dialogResult) {
                             $.ajax({
-                                url: "@Url.Action("DXRemove","Order")",
+                                url: "@Url.Action("DXRemove","Product")",
                                 dataType: "json",
                                 type: 'POST',
                                 contentType: "application/json; charset=utf-8",

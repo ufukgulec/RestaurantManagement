@@ -8,6 +8,7 @@ namespace RestaurantManagement.Domain.Entities
 {
     public class Order : BaseEntity
     {
+        public string Name { get; set; }
         public Guid OrderTypeId { get; set; }
         public OrderType? OrderType { get; set; }
 

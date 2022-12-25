@@ -26,10 +26,13 @@ namespace RestaurantManagement.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> DXInsert([FromBody] Ingredient ingredient)
         {
-            var result = await _service.AddAsync(ingredient);
-            if (result)
+            var exist = await _service.GetSingleAsync(x => x.Name.ToLower() == ingredient.Name.ToLower());
+
+            if (exist is null)
             {
+                var result = await _service.AddAsync(ingredient);
                 return Ok(ingredient);
+
             }
             else
             {
@@ -40,10 +43,13 @@ namespace RestaurantManagement.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> DXUpdate([FromBody] Ingredient ingredient)
         {
-            var result = await _service.Update(ingredient);
-            if (result)
+            var exist = await _service.GetSingleAsync(x => x.Name.ToLower() == ingredient.Name.ToLower() && x.Id != ingredient.Id);
+
+            if (exist is null)
             {
+                var result = await _service.Update(ingredient);
                 return Ok(ingredient);
+
             }
             else
             {

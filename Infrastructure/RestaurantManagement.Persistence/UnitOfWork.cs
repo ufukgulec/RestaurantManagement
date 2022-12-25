@@ -31,6 +31,8 @@ namespace RestaurantManagement.Application
         public IRoleRepository? _RoleRepository;
         public ISupplierRepository? _SupplierRepository;
         public IWholesaleRepository? _WholesaleRepository;
+        public INotificationTypeRepository? _NotificationTypeRepository;
+        public INotificationRepository? _NotificationRepository;
 
         public ISectionRepository? _SectionRepository;
         public ITopMenuRepository? _TopMenuRepository;
@@ -60,6 +62,12 @@ namespace RestaurantManagement.Application
         public ISupplierRepository SupplierRepository => _SupplierRepository ?? (_SupplierRepository = new SupplierRepository(context));
 
         public IWholesaleRepository WholesaleRepository => _WholesaleRepository ?? (_WholesaleRepository = new WholesaleRepository(context));
+
+        public INotificationTypeRepository NotificationTypeRepository => _NotificationTypeRepository ?? (_NotificationTypeRepository = new NotificationTypeRepository(context));
+
+        public INotificationRepository NotificationRepository => _NotificationRepository ?? (_NotificationRepository = new NotificationRepository(context));
+
+
 
         public ISectionRepository SectionRepository => _SectionRepository ?? (_SectionRepository = new SectionRepository(context));
 

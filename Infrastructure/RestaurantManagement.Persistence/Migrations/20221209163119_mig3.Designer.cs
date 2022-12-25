@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RestaurantManagement.Persistence.Contexts;
 
@@ -11,9 +12,11 @@ using RestaurantManagement.Persistence.Contexts;
 namespace RestaurantManagement.Persistence.Migrations
 {
     [DbContext(typeof(ManagementContext))]
-    partial class ManagementContextModelSnapshot : ModelSnapshot
+    [Migration("20221209163119_mig3")]
+    partial class mig3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -210,74 +213,6 @@ namespace RestaurantManagement.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Ingredients");
-                });
-
-            modelBuilder.Entity("RestaurantManagement.Domain.Entities.Notification", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Caption")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("NotificationTypeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NotificationTypeId");
-
-                    b.ToTable("Notifications");
-                });
-
-            modelBuilder.Entity("RestaurantManagement.Domain.Entities.NotificationType", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Class")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Icon")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("NotificationTypes");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Order", b =>
@@ -605,17 +540,6 @@ namespace RestaurantManagement.Persistence.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("RestaurantManagement.Domain.Entities.Notification", b =>
-                {
-                    b.HasOne("RestaurantManagement.Domain.Entities.NotificationType", "NotificationType")
-                        .WithMany("Notifications")
-                        .HasForeignKey("NotificationTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("NotificationType");
-                });
-
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Order", b =>
                 {
                     b.HasOne("RestaurantManagement.Domain.Entities.Employee", "Employee")
@@ -736,11 +660,6 @@ namespace RestaurantManagement.Persistence.Migrations
                     b.Navigation("Recipes");
 
                     b.Navigation("Wholesales");
-                });
-
-            modelBuilder.Entity("RestaurantManagement.Domain.Entities.NotificationType", b =>
-                {
-                    b.Navigation("Notifications");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Order", b =>

@@ -6,25 +6,25 @@
     <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/22.1.6/css/dx.common.css" />
     <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/22.1.6/css/dx.light.css" />
     <style>
-                .editor {
-                    font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
-                    font-size: 14px;
-                    outline: 0;
-                    margin: 0;
-                    display: block;
-                    padding: 5px;
-                    width: 100%;
-                    border: 0;
-                    border-top: 1px dashed #ddd;
-                    border-bottom: 1px dashed #ddd;
-                    border-radius: 0;
-                    box-shadow: none;
-                    background: #eee;
-                    height: inherit;
-                    resize: none;
-                    font-weight: bold;
-        /*            text-transform: uppercase;*/
-                }
+        .editor {
+            font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+            font-size: 14px;
+            outline: 0;
+            margin: 0;
+            display: block;
+            padding: 5px;
+            width: 100%;
+            border: 0;
+            border-top: 1px dashed #ddd;
+            border-bottom: 1px dashed #ddd;
+            border-radius: 0;
+            box-shadow: none;
+            background: #eee;
+            height: inherit;
+            resize: none;
+            font-weight: bold;
+            /*            text-transform: uppercase;*/
+        }
     </style>
 }
     <div class="d-flex flex-column-fluid">
@@ -204,6 +204,42 @@
             });
         };
 
+        function createView(query){
+            if (query.length == 0) {
+                toastr.error('Boş sorguyu çalıştıramazsınız!');
+            } else {
+                const deferred = $.Deferred();
+                $.ajax({
+                    url: "@Url.Action("CreateView","Editor")",
+                    dataType: "json",
+                    type: 'POST',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(query),
+                    beforeSend: function () {
+                        KTApp.block('.sql', {
+                            overlayColor: '#000000',
+                            state: 'danger',
+                            message: 'Bekleyiniz...'
+                        });
+                    },
+                    success: function (validationResult) {
+                        if (validationResult.errorText) {
+                            deferred.reject(validationResult.errorText);
+                            alert(validationResult);
+                        } else {
+                            BindTable(JSON.parse(validationResult));
+                            KTApp.unblock('.sql');
+                            //Swal.fire("Başarılı!", "Kaydetme işlemi başarılı.", "success");
+                        }
+                    },
+                    error: function () {
+                        toastr.error('Hatalı sorgu!');
+                        KTApp.unblock('.sql');
+                        deferred.reject("Kaydetme işleminde hata oluştu.");
+                    },
+                });
+            }
+        }
         function sqlRun(query) {
             if (query.length == 0) {
                 toastr.error('Boş sorguyu çalıştıramazsınız!');

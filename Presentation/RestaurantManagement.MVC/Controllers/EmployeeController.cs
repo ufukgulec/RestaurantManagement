@@ -20,10 +20,6 @@ namespace RestaurantManagement.MVC.Controllers
         public async Task<IActionResult> List(string id)
         {
 
-            
-            var d1 = _service.FromSql($"Select * from Employees");
-
-
             List<Employee> data;
             if (id is null)
             {
