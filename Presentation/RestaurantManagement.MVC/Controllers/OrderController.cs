@@ -22,7 +22,7 @@ namespace RestaurantManagement.MVC.Controllers
             var prcIds = await service.ProcessRepository.GetListAsync();
 
             Random random = new Random();
-            for (int i = 0; i < 50; i++)
+            for (int i = 0; i < 2; i++)
             {
                 int ot = random.Next(0, OrderTypeIds.Count);
 
@@ -42,7 +42,7 @@ namespace RestaurantManagement.MVC.Controllers
             var ordIds = await service.OrderRepository.GetListAsync();
             var prdIds = await service.ProductRepository.GetListAsync();
 
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 4; i++)
             {
                 int ot = random.Next(0, ordIds.Count);
 
@@ -63,6 +63,7 @@ namespace RestaurantManagement.MVC.Controllers
         }
         public async Task<IActionResult> List()
         {
+            ViewBag.PageHeader = "Sipariş Tablosu";
             var data = await _service.GetListAsync(default, false, x => x.OrderType, x => x.Employee, x => x.Process);
 
             ViewBag.Types = await service.OrderTypeRepository.GetListAsync(default, false);

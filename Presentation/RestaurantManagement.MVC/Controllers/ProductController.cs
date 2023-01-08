@@ -20,6 +20,7 @@ namespace RestaurantManagement.MVC.Controllers
         }
         public async Task<IActionResult> List()
         {
+            ViewBag.PageHeader = "Ürünler Tablosu";
             ViewBag.Categories = await service.CategoryRepository.GetListAsync(default, false);
             var data = await _service.GetListAsync(default, false);
             return View(data);

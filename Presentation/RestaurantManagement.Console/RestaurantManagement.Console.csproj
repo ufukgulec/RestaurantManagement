@@ -10,6 +10,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Core\RestaurantManagement.Domain\RestaurantManagement.Domain.csproj" />
     <ProjectReference Include="..\..\Infrastructure\RestaurantManagement.Persistence\RestaurantManagement.Persistence.csproj" />
+    <ProjectReference Include="..\RestaurantManagement.MVC\RestaurantManagement.MVC.csproj" />
   </ItemGroup>
 
 </Project>

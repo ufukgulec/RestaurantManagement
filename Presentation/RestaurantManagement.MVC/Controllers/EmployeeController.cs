@@ -19,7 +19,7 @@ namespace RestaurantManagement.MVC.Controllers
         }
         public async Task<IActionResult> List(string id)
         {
-
+            ViewBag.PageHeader = "Çalışanlar Tablosu";
             List<Employee> data;
             if (id is null)
             {

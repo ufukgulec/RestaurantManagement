@@ -20,7 +20,7 @@ namespace RestaurantManagement.MVC.Controllers
         {
             _service = service.CategoryRepository;
         }
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             ViewBag.PageHeader = "Kategori Paneli";
 

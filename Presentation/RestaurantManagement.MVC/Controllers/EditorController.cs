@@ -23,6 +23,7 @@ namespace RestaurantManagement.MVC.Controllers
         }
         public IActionResult Index()
         {
+            ViewBag.PageHeader = "Sql Editör";
             return View();
         }
         [HttpGet]

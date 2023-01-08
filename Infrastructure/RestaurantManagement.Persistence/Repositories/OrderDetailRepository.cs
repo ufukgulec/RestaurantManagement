@@ -49,13 +49,9 @@ namespace RestaurantManagement.Application.Repositories
                 {
                     Category = x.Key,
                     Count = x.Count()
-                }).OrderByDescending(x => x.Count).Take(7).ToList();
+                }).OrderByDescending(x => x.Count).ToList();
 
             return data;
-            /*.Select(x => new Tı
-                {
-                    arg = x.Key,
-                    val = x.Count()*/
         }
     }
 }

@@ -162,6 +162,7 @@
                                     if (validationResult.errorText) {
                                         deferred.reject(validationResult.errorText);
                                     } else {
+                                        e.data.Id = validationResult.id;
                                         deferred.resolve(false);
                                         KTApp.unblock('.dx-overlay-content');
                                         Swal.fire("Başarılı!", "Kaydetme işlemi başarılı.", "success");

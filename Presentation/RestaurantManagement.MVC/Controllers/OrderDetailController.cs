@@ -20,6 +20,7 @@ namespace RestaurantManagement.MVC.Controllers
         }
         public async Task<IActionResult> List()
         {
+            ViewBag.PageHeader = "Sipariş Detay Tablosu";
             var data = await _service.GetListAsync(default, false);
             ViewBag.Orders = await service.OrderRepository.GetListAsync(default, false);
             ViewBag.Products = await service.ProductRepository.GetListAsync(default, false);

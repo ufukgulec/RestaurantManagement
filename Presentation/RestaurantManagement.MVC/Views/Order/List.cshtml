@@ -201,6 +201,8 @@
                                         //e.data.Name = validationResult.name;
                                         console.log(validationResult);
                                         //e.data.Process.IconUrl = validationResult.Process.IconUrl;
+                                        e.data.Id = validationResult.id;
+                                        e.data.Name = validationResult.name;
                                         deferred.resolve(false);
                                         KTApp.unblock('.dx-overlay-content');
                                         Swal.fire("Başarılı!", "Kaydetme işlemi başarılı.", "success");

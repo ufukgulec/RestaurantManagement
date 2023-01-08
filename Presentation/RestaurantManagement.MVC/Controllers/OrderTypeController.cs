@@ -20,6 +20,7 @@ namespace RestaurantManagement.MVC.Controllers
         }
         public async Task<IActionResult> List()
         {
+            ViewBag.PageHeader = "Sipariş Tipleri Tablosu";
             var data = await _service.GetListAsync(default, false);
             return View(data);
         }
