@@ -1,4 +1,5 @@
 using RestaurantManagement.Persistence;
+using RestaurantManagement.Infrastructure;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +9,7 @@ builder.Services.AddControllersWithViews()
     .AddJsonOptions(c => c.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
 builder.Services.AddPersistenceServicesAsync(builder.Configuration);
+builder.Services.AddInfrastructureServicesAsync(builder.Configuration);
 
 var app = builder.Build();
 

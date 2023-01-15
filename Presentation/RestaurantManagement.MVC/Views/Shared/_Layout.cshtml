@@ -46,7 +46,7 @@
     <partial name="_UserPanel" />
     <partial name="_QuickCard" />
     <partial name="_QuickPanel" />
-    <partial name="_ChatPanel" />
+    @await Component.InvokeAsync("Chat")
     <partial name="_ScrollTop" />
     <partial name="_Toolbar" />
     <!--begin::Global Config(global config for global JS scripts)-->
