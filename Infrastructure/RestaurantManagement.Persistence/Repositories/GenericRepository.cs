@@ -158,8 +158,13 @@ namespace RestaurantManagement.Application.Repositories
         public async Task<bool> AddRangeAsync(List<T> entities)
         {
             await Table.AddRangeAsync(entities);
-            //await SaveAsync();
-            return true;
+
+            if (await _context.SaveChangesAsync() > 0)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public async Task<bool> Update(T entity)
@@ -223,6 +228,21 @@ namespace RestaurantManagement.Application.Repositories
         public IQueryable<T> FromSql(FormattableString sql)
         {
             return _context.Set<T>().FromSql<T>(sql);
+        }
+
+        public bool Attach(T entity)
+        {
+            return true;
+        }
+
+        public async Task<bool> AttachRange(List<T> entities)
+        {
+            Table.AttachRange(entities);
+            if (await _context.SaveChangesAsync() > 0)
+            {
+                return true;
+            }
+            return false;
         }
 
         #endregion

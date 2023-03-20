@@ -1,22 +1,15 @@
-﻿using RestaurantManagement.Domain.Entities;
+﻿using RestaurantManagement.Application;
+using RestaurantManagement.Domain.Entities;
 
 namespace RestaurantManagement.MVC.Models.ViewModels
 {
-    public class VMBaseModel<T> where T : BaseEntity
+    public class VMBaseModel
     {
-        protected readonly List<T> _list;
+        protected readonly IUnitOfWork service;
 
-        public VMBaseModel(List<T> list)
+        public VMBaseModel(IUnitOfWork service)
         {
-            _list = list;
-        }
-        public int getActiveCount
-        {
-            get { return _list.Where(x => x.Active).Count(); }
-        }
-        public int getPassiveCount
-        {
-            get { return _list.Where(x => x.Active == false).Count(); }
+            this.service = service;
         }
     }
 }

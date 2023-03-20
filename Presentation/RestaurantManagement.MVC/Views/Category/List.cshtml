@@ -130,6 +130,18 @@
                         value: new Date(),
                         sortOrder: 'desc',
                     },
+                    {
+                        type: "buttons",
+                        buttons: ["edit", "delete", {
+                            text: "Filtrele",
+                            icon: "increaseindent",
+                            hint: "Filtrele",
+                            onClick: function (e) {
+                                //console.error(e);
+                                window.location.href = '/Product/List/' + e.row.data.Id;
+                            }
+                        }]
+                    }
                 ],
                 onRowInserting: function (e) {
                     e.data.CreatedDate = new Date();

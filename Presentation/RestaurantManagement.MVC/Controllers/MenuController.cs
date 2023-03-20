@@ -1,65 +1,89 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Bogus.DataSets;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.DotNet.MSIdentity.Shared;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using RestaurantManagement.Application;
+using RestaurantManagement.Application.Repositories;
 using RestaurantManagement.Domain.AppEntities;
+using RestaurantManagement.Domain.Entities;
+using System;
+using System.IO;
+
 
 namespace RestaurantManagement.MVC.Controllers
 {
-    public class MenuData
+    public class Root
     {
+        public int ID { get; set; }
+        public int Head_ID { get; set; }
         public string Caption { get; set; }
-        public string? Id { get; set; }
-        public string? ParentId { get; set; }
-        public int? RowNumber { get; set; }
-        public string? Link { get; set; }
-        public bool? isSection { get; set; }
-        public bool? isTopMenu { get; set; }
+        public string Controller { get; set; }
+        public string Action { get; set; }
+        public string Params { get; set; }
+        public string Icon { get; set; }
+        public string Visible { get; set; }
+        public string Type { get; set; }
     }
+
     public class MenuController : BaseController
     {
+        private readonly IMenuRepository _menuRepository;
         public MenuController(IUnitOfWork service) : base(service)
         {
+            _menuRepository = service.MenuRepository;
         }
-
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var sections = service.SectionRepository.GetList().Select(x => new MenuData
-            {
-                Id = x.Id.ToString(),
-                Caption = x.Caption,
-                ParentId = "0",
-                RowNumber = x.RowNumber,
-                isSection = true,
-                isTopMenu = false,
-            }).ToList();
-            var topmenus = service.TopMenuRepository.GetList().Select(x => new MenuData
-            {
-                Id = x.Id.ToString(),
-                Caption = x.Caption,
-                ParentId = x.MenuSectionId.ToString(),
-                RowNumber = x.RowNumber,
-                isSection = false,
-                isTopMenu = true
-            }).ToList();
-            var submenus = service.SubMenuRepository.GetList(default, default, x => x.TopMenu).Select(x => new MenuData
-            {
-                Id = x.Id.ToString(),
-                Caption = x.Caption,
-                ParentId = x.TopMenuId.ToString(),
-                RowNumber = x.RowNumber,
-                Link = x.Link,
-                isSection = false,
-                isTopMenu = false,
-            }).ToList();
+            var data = await _menuRepository.GetListAsync(default, false);
 
-            sections.AddRange(topmenus);
-            sections.AddRange(submenus);
-
-            return View(sections);
+            return View(data);
         }
         [HttpPost]
-        public IActionResult DXInsert([FromBody] MenuData? menuData)
+        public async Task<IActionResult> DXInsert([FromBody] List<Menu> links)
         {
-            return View(menuData);
+            foreach (var link in links)
+            {
+                if (link.Id.ToString() == "00000000-0000-0000-0000-000000000000")
+                {
+                    await _menuRepository.AddAsync(link);
+                }
+                else
+                {
+                    await _menuRepository.Update(link);
+                }
+            }
+            //await _menuRepository.UpdateOrAdd(links);
+            //var result = await _menuRepository.AddRangeAsync(links);
+            //var result = await _menuRepository.AddAsync(new Menu { Caption = "ufuk kod" });
+
+            string json = JsonConvert.SerializeObject(links);
+            System.IO.File.WriteAllText(@"wwwroot\menuJson.json", json);
+
+            if (true)
+            {
+                return Ok(links);
+            }
+            else
+            {
+                return BadRequest(links);
+            }
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DXRemove([FromBody] Menu menu)
+        {
+            var result = await _menuRepository.Remove(menu);
+            if (result)
+            {
+                return Ok(new Menu());
+            }
+            else
+            {
+                return BadRequest(new Menu());
+            }
+
         }
     }
 }

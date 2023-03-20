@@ -2,6 +2,7 @@
 using RestaurantManagement.Application.Repositories;
 using RestaurantManagement.Application;
 using RestaurantManagement.Domain.Entities;
+using RestaurantManagement.MVC.Models.ViewModels;
 
 namespace RestaurantManagement.MVC.Controllers
 {
@@ -15,7 +16,8 @@ namespace RestaurantManagement.MVC.Controllers
         }
         public IActionResult Index()
         {
-            return View();
+            VMEmployeeModel model = new VMEmployeeModel(service);
+            return View(model);
         }
         public async Task<IActionResult> List(string id)
         {

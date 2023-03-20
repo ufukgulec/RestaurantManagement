@@ -30,10 +30,16 @@ namespace RestaurantManagement.Persistence.Contexts
         public DbSet<NotificationType> NotificationTypes { get; set; }
         public DbSet<Notification> Notifications { get; set; }
 
-        public DbSet<MenuSection> MenuSections { get; set; }
-        public DbSet<TopMenu> TopMenus { get; set; }
-        public DbSet<SubMenu> SubMenus { get; set; }
-
+        public DbSet<Menu> Menus { get; set; }
+        //public DbSet<TopMenu> TopMenus { get; set; }
+        //public DbSet<SubMenu> SubMenus { get; set; }
+        #region OS Config
+        public DbSet<OSAlert> OSAlerts { get; set; }
+        public DbSet<OSEvent> OSEvents { get; set; }
+        public DbSet<OSHeader> OSHeaders { get; set; }
+        public DbSet<OSHeaderAction> OSHeaderActions { get; set; }
+        public DbSet<OSLog> OSLogs { get; set; }
+        #endregion
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

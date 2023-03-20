@@ -10,7 +10,7 @@ namespace RestaurantManagement.Infrastructure
         public static void AddInfrastructureServicesAsync(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddOpenAIService(settings
-                => settings.ApiKey = "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");
+                => settings.ApiKey = "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");
 
 
             services.AddTransient<IServiceOfWork, ServiceOfWork>();

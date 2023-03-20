@@ -78,6 +78,8 @@ namespace RestaurantManagement.Application.Repositories
         Task<bool> Remove(T entity);
         bool RemoveRange(List<T> entities);
         Task<bool> Update(T entity);
+        bool Attach(T entity);
+        Task<bool> AttachRange(List<T> entities);
 
         bool BulkDeleteById(List<string> ids);
         bool BulkDeleteById(Expression<Func<T, bool>> expression);

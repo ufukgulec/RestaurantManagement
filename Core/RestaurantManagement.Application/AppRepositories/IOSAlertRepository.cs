@@ -1,6 +1,5 @@
 ﻿using RestaurantManagement.Domain.AppEntities;
 using RestaurantManagement.Domain.Entities;
-using RestaurantManagement.Persistence.Contexts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +8,8 @@ using System.Threading.Tasks;
 
 namespace RestaurantManagement.Application.Repositories
 {
-    public class TopMenuRepository : GenericRepository<TopMenu>, ITopMenuRepository
+    public interface IOSAlertRepository : IGenericRepository<OSAlert>
     {
-        public TopMenuRepository(ManagementContext context) : base(context)
-        {
-        }
+
     }
 }

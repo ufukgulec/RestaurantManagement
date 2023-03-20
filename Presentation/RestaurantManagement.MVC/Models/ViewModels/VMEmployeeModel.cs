@@ -13,39 +13,30 @@ using System.Security.Policy;
 
 namespace RestaurantManagement.MVC.Models.ViewModels
 {
-    public class VMCategoryModel : VMBaseModel
+    public class VMEmployeeModel : VMBaseModel
     {
-        private List<Category> list;
+        private List<Employee> list;
 
-        public VMCategoryModel(IUnitOfWork service) : base(service)
+        public VMEmployeeModel(IUnitOfWork service) : base(service)
         {
-            this.list = service.CategoryRepository.GetList(default, false);
+            this.list = service.EmployeeRepository.GetList(default, false);
         }
 
-        public int getActiveCategoryCount
+        public int getActiveCount
         {
             get
             {
                 return list.Where(x => x.Active).ToList().Count;
             }
         }
-        public int getPassiveCategoryCount
+        public int getPassiveCount
         {
             get
             {
                 return list.Where(x => x.Active == false).ToList().Count;
             }
         }
-        public string getAveragePrice
-        {
-            get
-            {
-                return service.ProductRepository.GetList()
-                    .Average(x => x.Price).ToString("#.##");
-
-            }
-        }
-        public int getTotalCategoryCount
+        public int getTotalCount
         {
             get
             {
@@ -61,31 +52,21 @@ namespace RestaurantManagement.MVC.Models.ViewModels
             }
         }
 
-        public List<TopSellingCategory> TopSellingCategories
-        {
-            get
-            {
-                var data = service.OrderDetailRepository.GetTopSellingCategories();
-
-                return data;
-            }
-        }
-
         public WidgetModel getAbout
         {
             get
             {
                 WidgetModel model = new WidgetModel();
-                model.widgetName = "Kategori Hakkında";
+                model.widgetName = "Çalışanlar Hakkında";
                 model.widgetText = DateTime.Now.ToString("dd.MM.yyyy dddd");
                 model.widgetIcon = "fas fa-tags";
-                model.widgetLink = "/Category/List";
+                model.widgetLink = "/Employee/List";
 
                 List<ListEntity> links = new List<ListEntity>()
                 {
                     new ListEntity()
                     {
-                        Text="Kategori Tablosu",SubText="Category/List"
+                        Text="Çalışanlar Tablosu",SubText="Category/List"
                     }
                 };
 
@@ -95,41 +76,41 @@ namespace RestaurantManagement.MVC.Models.ViewModels
                 {
                     new ListEntity()
                     {
-                        Text="Aktif Kategori Sayısı",
-                        SubText="Aktif Kategori Sayısı",
-                        Count = getActiveCategoryCount.ToString(),
+                        Text="Aktif Çalışan Sayısı",
+                        SubText="Aktif Çalışan Sayısı",
+                        Count = getActiveCount.ToString(),
                         iconClass="text-success fas fa-tag",
                         textClass="label-light-success",
-                        Tooltip ="Aktif olan tüm kategorilerin sayısını belirtir"
+                        Tooltip ="Aktif olan tüm çalışanların sayısını belirtir"
 
                     },
                     new ListEntity()
                     {
-                        Text="Pasif Kategori Sayısı",
-                        SubText="Pasif Kategori Sayısı",
-                        Count = getPassiveCategoryCount.ToString(),
+                        Text="Pasif Çalışan Sayısı",
+                        SubText="Pasif Çalışan Sayısı",
+                        Count = getPassiveCount.ToString(),
                         iconClass="text-danger fas fa-tag",
                         textClass="label-light-danger",
-                        Tooltip ="Pasif olan tüm kategorilerin sayısını belirtir"
+                        Tooltip ="Pasif olan tüm Çalışan sayısını belirtir"
                     },
                     new ListEntity()
                     {
-                        Text="Toplam Kategori",
-                        SubText="Toplam Kategori",
-                        Count = getTotalCategoryCount.ToString(),
+                        Text="Toplam Çalışan",
+                        SubText="Toplam Çalışan",
+                        Count = getTotalCount.ToString(),
                         iconClass="text-primary fas fa-tag",
                         textClass="label-light-primary",
-                        Tooltip ="Tüm kategorilerin sayısını belirtir"
+                        Tooltip ="Tüm Çalışan sayısını belirtir"
                     },
-                    new ListEntity()
-                    {
-                        Text="Fiyat Ortalamaları",
-                        SubText="Fiyat Ortalamaları",
-                        Count = getAveragePrice,
-                        iconClass="text-info fas fa-chart-area",
-                        textClass="label-light-info",
-                        Tooltip ="Tüm ürünlerin fiyat ortalamasını belirtir"
-                    },
+                    //new ListEntity()
+                    //{
+                    //    Text="Fiyat Ortalamaları",
+                    //    SubText="Fiyat Ortalamaları",
+                    //    Count = getAveragePrice,
+                    //    iconClass="text-info fas fa-chart-area",
+                    //    textClass="label-light-info",
+                    //    Tooltip ="Tüm ürünlerin fiyat ortalamasını belirtir"
+                    //},
                 };
                 model.widgetEntities.AddRange(entities);
 
@@ -145,7 +126,7 @@ namespace RestaurantManagement.MVC.Models.ViewModels
                 .Select(x => new ListEntity
                 {
                     Id = x.Id.ToString(),
-                    Text = x.Name,
+                    Text = x.Fullname,
                     SubText = DateTime.Now
                     .Subtract(x.CreatedDate).Days != 0
                     ? DateTime.Now.Subtract(x.CreatedDate).Days + " gün önce"
@@ -162,7 +143,7 @@ namespace RestaurantManagement.MVC.Models.ViewModels
                 {
                     new ListEntity()
                     {
-                        Text="Kategori Tablosu",SubText="Category/List"
+                        Text="Çalışan Tablosu",SubText="Employee/List"
                     }
                 };
 
@@ -182,7 +163,7 @@ namespace RestaurantManagement.MVC.Models.ViewModels
                 .Select(x => new ListEntity
                 {
                     Id = x.Id.ToString(),
-                    Text = x.Name,
+                    Text = x.Fullname,
                     SubText = DateTime.Now
                     .Subtract(x.UpdatedDate).Days != 0
                     ? DateTime.Now.Subtract(x.UpdatedDate).Days + " gün önce"
@@ -199,7 +180,7 @@ namespace RestaurantManagement.MVC.Models.ViewModels
                 {
                     new ListEntity()
                     {
-                        Text="Kategori Tablosu",SubText="Category/List"
+                        Text="Çalışan Tablosu",SubText="Employee/List"
                     }
                 };
 

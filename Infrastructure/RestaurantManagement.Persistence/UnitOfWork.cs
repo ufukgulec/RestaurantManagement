@@ -1,4 +1,5 @@
-﻿using RestaurantManagement.Application.Repositories;
+﻿using RestaurantManagement.Application.AppRepositories;
+using RestaurantManagement.Application.Repositories;
 using RestaurantManagement.Persistence.Contexts;
 using System;
 using System.Collections.Generic;
@@ -34,9 +35,23 @@ namespace RestaurantManagement.Application
         public INotificationTypeRepository? _NotificationTypeRepository;
         public INotificationRepository? _NotificationRepository;
 
-        public ISectionRepository? _SectionRepository;
-        public ITopMenuRepository? _TopMenuRepository;
-        public ISubMenuRepository? _SubMenuRepository;
+
+        #region OS
+        public IMenuRepository? _MenuRepository;
+        public IOSAlertRepository? _OSAlertRepository;
+        public IOSEventRepository? _OSEventRepository;
+        public IOSHeaderActionRepository? _OSHeaderActionRepository;
+        public IOSHeaderRepository? _OSHeaderRepository;
+        public IOSLogRepository? _OSLogRepository;
+
+        public IMenuRepository MenuRepository => _MenuRepository ?? (_MenuRepository = new MenuRepository(context));
+        public IOSAlertRepository OSAlertRepository => _OSAlertRepository ?? (_OSAlertRepository = new OSAlertRepository(context));
+        public IOSEventRepository OSEventRepository => _OSEventRepository ?? (_OSEventRepository = new OSEventRepository(context));
+        public IOSHeaderActionRepository OSHeaderActionRepository => _OSHeaderActionRepository ?? (_OSHeaderActionRepository = new OSHeaderActionRepository(context));
+        public IOSHeaderRepository OSHeaderRepository => _OSHeaderRepository ?? (_OSHeaderRepository = new OSHeaderRepository(context));
+        public IOSLogRepository OSLogRepository => _OSLogRepository ?? (_OSLogRepository = new OSLogRepository(context));
+
+        #endregion
 
 
         public ICategoryRepository CategoryRepository => _CategoryRepository ?? (_CategoryRepository = new CategoryRepository(context));
@@ -69,11 +84,7 @@ namespace RestaurantManagement.Application
 
 
 
-        public ISectionRepository SectionRepository => _SectionRepository ?? (_SectionRepository = new SectionRepository(context));
 
-        public ITopMenuRepository TopMenuRepository => _TopMenuRepository ?? (_TopMenuRepository = new TopMenuRepository(context));
-
-        public ISubMenuRepository SubMenuRepository => _SubMenuRepository ?? (_SubMenuRepository = new SubMenuRepository(context));
 
         public int SaveChanges()
         {

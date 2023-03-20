@@ -18,11 +18,20 @@ namespace RestaurantManagement.MVC.Controllers
         {
             return View();
         }
-        public async Task<IActionResult> List()
+        public async Task<IActionResult> List(string id)
         {
             ViewBag.PageHeader = "Ürünler Tablosu";
             ViewBag.Categories = await service.CategoryRepository.GetListAsync(default, false);
-            var data = await _service.GetListAsync(default, false);
+            List<Product> data;
+            if (id is null)
+            {
+                data = await _service.GetListAsync(default, false);
+            }
+            else
+            {
+                data = await _service.GetListAsync(x => x.CategoryId.Equals(Guid.Parse(id)), false);
+            }
+
             return View(data);
         }
         [HttpPost]

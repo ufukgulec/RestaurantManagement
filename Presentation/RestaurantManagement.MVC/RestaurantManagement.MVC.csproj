@@ -16,4 +16,6 @@
     <ProjectReference Include="..\..\Infrastructure\RestaurantManagement.Persistence\RestaurantManagement.Persistence.csproj" />
   </ItemGroup>
 
+  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
+
 </Project>

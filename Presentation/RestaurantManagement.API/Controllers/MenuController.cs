@@ -28,15 +28,6 @@ namespace RestaurantManagement.API.Controllers
             //    MenuSectionId = Guid.Parse("84EEFF55-6A9B-418C-972A-08DACAEED267"),
             //    Active = true,
             //});
-            await service.SubMenuRepository.AddAsync(new Domain.AppEntities.SubMenu()
-            {
-                Caption = "Sıralama",
-                ClickCounter = 0,
-                Link = "/Menu/Order",
-                RowNumber = 0,
-                TopMenuId = Guid.Parse("24A26B6D-B8C7-4DDF-F37E-08DACAEF422F"),
-                Active = true
-            });
             return Ok("Başarılı");
         }
     }

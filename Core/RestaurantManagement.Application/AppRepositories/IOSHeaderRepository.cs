@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace RestaurantManagement.Application.Repositories
 {
-    public interface ISubMenuRepository : IGenericRepository<SubMenu>
+    public interface IOSHeaderRepository : IGenericRepository<OSHeader>
     {
     }
 }

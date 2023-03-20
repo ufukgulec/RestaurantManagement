@@ -13,7 +13,6 @@ namespace RestaurantManagement.API.Controllers
 
         public BaseController(IUnitOfWork service)
         {
-
             this.service = service;
         }
     }

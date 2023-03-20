@@ -22,7 +22,7 @@ namespace RestaurantManagement.MVC.Controllers
         {
             ViewData["Title"] = "Deneme";
 
-            var answer = await _service.OpenAI.ImageGeneratorAsync("dolphin with human face");
+            //var answer = await _service.OpenAI.ImageGeneratorAsync("dolphin with human face");
             return View();
         }
         [HttpPost]

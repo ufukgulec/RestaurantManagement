@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RestaurantManagement.Persistence.Contexts;
 
@@ -11,9 +12,11 @@ using RestaurantManagement.Persistence.Contexts;
 namespace RestaurantManagement.Persistence.Migrations
 {
     [DbContext(typeof(ManagementContext))]
-    partial class ManagementContextModelSnapshot : ModelSnapshot
+    [Migration("20230203212353_mig8")]
+    partial class mig8
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -70,162 +73,6 @@ namespace RestaurantManagement.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Menus");
-                });
-
-            modelBuilder.Entity("RestaurantManagement.Domain.AppEntities.OSAlert", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Action")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Class")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Icon")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("OSAlerts");
-                });
-
-            modelBuilder.Entity("RestaurantManagement.Domain.AppEntities.OSEvent", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Action")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Class")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Icon")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("OSEvents");
-                });
-
-            modelBuilder.Entity("RestaurantManagement.Domain.AppEntities.OSHeader", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("OSHeaders");
-                });
-
-            modelBuilder.Entity("RestaurantManagement.Domain.AppEntities.OSHeaderAction", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Action")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Class")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Icon")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("OSHeaderId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OSHeaderId");
-
-                    b.ToTable("OSHeaderActions");
-                });
-
-            modelBuilder.Entity("RestaurantManagement.Domain.AppEntities.OSLog", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Action")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Class")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Icon")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("OSLogs");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Category", b =>
@@ -676,17 +523,6 @@ namespace RestaurantManagement.Persistence.Migrations
                     b.ToTable("Wholesales");
                 });
 
-            modelBuilder.Entity("RestaurantManagement.Domain.AppEntities.OSHeaderAction", b =>
-                {
-                    b.HasOne("RestaurantManagement.Domain.AppEntities.OSHeader", "OSHeader")
-                        .WithMany("OSHeaderActions")
-                        .HasForeignKey("OSHeaderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("OSHeader");
-                });
-
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Employee", b =>
                 {
                     b.HasOne("RestaurantManagement.Domain.Entities.Role", "Role")
@@ -802,11 +638,6 @@ namespace RestaurantManagement.Persistence.Migrations
                     b.Navigation("Ingredient");
 
                     b.Navigation("Supplier");
-                });
-
-            modelBuilder.Entity("RestaurantManagement.Domain.AppEntities.OSHeader", b =>
-                {
-                    b.Navigation("OSHeaderActions");
                 });
 
             modelBuilder.Entity("RestaurantManagement.Domain.Entities.Category", b =>
