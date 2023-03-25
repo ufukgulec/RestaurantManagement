@@ -3,17 +3,16 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using RestaurantManagement.Application;
 using RestaurantManagement.Application.Repositories;
-using RestaurantManagement.Domain.Entities;
 using System;
 
 namespace RestaurantManagement.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoryController : BaseController
+    public class RoleController : BaseController
     {
 
-        public CategoryController(IUnitOfWork service) : base(service)
+        public RoleController(IUnitOfWork service) : base(service)
         {
 
         }
@@ -21,7 +20,7 @@ namespace RestaurantManagement.API.Controllers
         [HttpGet("GetById/{id}")]
         public async Task<IActionResult> GetById(string id)
         {
-            var result = await service.CategoryRepository.GetByIdAsync(id);
+            var result = await service.RoleRepository.GetByIdAsync(id);
 
             if (result is not null)
             {
@@ -33,7 +32,7 @@ namespace RestaurantManagement.API.Controllers
         [HttpGet("GetList")]
         public async Task<IActionResult> GetList()
         {
-            var result = await service.CategoryRepository.GetListAsync(default, false);
+            var result = await service.RoleRepository.GetListAsync(default, false);
 
             if (result is not null)
             {
@@ -67,50 +66,6 @@ namespace RestaurantManagement.API.Controllers
                 return Ok(datas);
             }
             return BadRequest();
-        }
-
-        [HttpPost("Add")]
-        public async Task<IActionResult> Add(Category? entity)
-        {
-            var result = false;
-            var Message = "";
-            if (entity != null)
-            {
-                var exist = await service.CategoryRepository.GetSingleAsync(x => x.Name.ToLower() == entity.Name.ToLower());
-
-                if (exist == null)
-                {
-                    result = await service.CategoryRepository.AddAsync(entity);
-                    if (result)
-                    {
-                        Message += "Başarılı";
-                    }
-                    else
-                    {
-                        Message += "Eklerken bir hata oluştu";
-                    }
-                }
-                else
-                {
-                    Message += "Eklemeye çalıştığınız kategorinin ismiyle bir tane daha kategori vardır.";
-                }
-            }
-            if (result)
-            {
-                return Ok("Başarılı");
-            }
-            else
-            {
-                return BadRequest(Message);
-            }
-
-        }
-        [HttpDelete("Remove/{id}")]
-        public async Task<IActionResult> Remove(string id)
-        {
-
-            var data = await service.CategoryRepository.GetByIdAsync("");
-            return Ok();
         }
     }
 }

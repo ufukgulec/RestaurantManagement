@@ -18,7 +18,7 @@ namespace RestaurantManagement.Persistence
     {
         public static void AddPersistenceServicesAsync(this IServiceCollection services, IConfiguration configuration)
         {
-            var conn = configuration["ConnectionString"].ToString();
+            var conn = configuration["ConnectionString2"].ToString();
             services.AddDbContext<ManagementContext>(options => options.UseSqlServer(conn));
 
             //services.AddScoped<ICountryRepository, CountryRepository>();
