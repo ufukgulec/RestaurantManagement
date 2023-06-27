@@ -1,12 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using RestaurantManagement.Application;
 using RestaurantManagement.Application.Repositories;
+using RestaurantManagement.Domain.Entities;
 using System;
 
 namespace RestaurantManagement.API.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class OrderDetailController : BaseController
@@ -66,6 +70,114 @@ namespace RestaurantManagement.API.Controllers
                 return Ok(datas);
             }
             return BadRequest();
+        }
+        [HttpPost("Add")]
+        public async Task<IActionResult> Add(OrderDetail? entity)
+        {
+            var result = false;
+            var Message = "";
+            if (entity != null)
+            {
+
+                result = await service.OrderDetailRepository.AddAsync(entity);
+                if (result)
+                {
+                    Message = "Başarılı";
+                }
+                else
+                {
+                    Message = "Eklerken bir hata oluştu";
+                }
+            }
+            if (result)
+            {
+                return Ok(Message);
+            }
+            else
+            {
+                return BadRequest(Message);
+            }
+
+        }
+
+        [HttpPost("Update")]
+        public async Task<IActionResult> Update(OrderDetail? entity)
+        {
+            var result = false;
+            var Message = "";
+            if (entity != null)
+            {
+                var exist = await service.OrderDetailRepository.GetByIdAsync(entity.Id.ToString(), false);
+
+                if (exist != null)
+                {
+                    result = await service.OrderDetailRepository.Update(entity);
+                    if (result)
+                    {
+                        Message = "Başarılı";
+                    }
+                    else
+                    {
+                        Message = "Güncellerken bir hata oluştu";
+                    }
+                }
+                else
+                {
+                    Message = "Güncellerken çalıştığınız kategori bulunamadı.";
+                }
+            }
+            if (result)
+            {
+                return Ok(Message);
+            }
+            else
+            {
+                return BadRequest(Message);
+            }
+
+        }
+        [HttpDelete("Remove/{id}")]
+        public async Task<IActionResult> Remove(string id)
+        {
+            var result = false;
+            var Message = "";
+            var exist = await service.OrderDetailRepository.GetByIdAsync(id);
+
+            if (exist != null)
+            {
+                if (exist.Active)
+                {
+                    exist.Active = false;
+                    await service.OrderDetailRepository.Update(exist);
+                    Message = "Kategori Pasif duruma getirildi.";
+                }
+                else
+                {
+                    result = await service.OrderDetailRepository.Remove(id);
+                    if (result)
+                    {
+                        Message = "Başarılı";
+                    }
+                    else
+                    {
+                        Message = "Silerken bir hata oluştu";
+                    }
+                }
+
+            }
+            else
+            {
+                Message = "Silmeye çalıştığınız kategori bulunamadı";
+            }
+
+            if (result)
+            {
+                return Ok(Message);
+            }
+            else
+            {
+                return BadRequest(Message);
+            }
         }
     }
 }

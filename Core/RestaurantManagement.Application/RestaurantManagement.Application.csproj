@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Presentation\RestaurantManagement.Shared\RestaurantManagement.Shared.csproj" />
     <ProjectReference Include="..\RestaurantManagement.Domain\RestaurantManagement.Domain.csproj" />
   </ItemGroup>
 

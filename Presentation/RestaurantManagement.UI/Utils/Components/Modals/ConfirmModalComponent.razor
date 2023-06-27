@@ -1,0 +1,33 @@
+﻿@inherits BaseModalComponent
+<div class="modal-backdrop fade show">
+</div>
+<div id="centermodal" class="modal fade show" tabindex="-1" aria-labelledby="standard-modalLabel" style="display: block;" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header modal-colored-header bg-@Color">
+                <h4 class="modal-title" id="standard-modalLabel">@Caption</h4>
+                <IconButtonComponent Icon="@CloseIcon" Color="@Color" OnClick="@CancelClicked" />
+            </div>
+            <div class="modal-body">
+                @Text
+            </div>
+            <div class="modal-footer">
+                <DefaultButtonComponent Caption="@NoText" Color="light" OnClick="@RejectClicked" />
+                <DefaultButtonComponent Caption="@YesText" Color="@Color" OnClick="@ConfirmClicked" />
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+@code {
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        Caption = parameters.GetValueOrDefault<string>("Caption") ?? "Başlık Yok";
+        Text = parameters.GetValueOrDefault<string>("Text") ?? "Mesaj Yok";
+        Color = parameters.GetValueOrDefault<string>("Color") ?? "info";
+        YesText = parameters.GetValueOrDefault<string>("YesText") ?? "Yes";
+        NoText = parameters.GetValueOrDefault<string>("NoText") ?? "No";
+
+        return base.SetParametersAsync(parameters);
+    }
+}

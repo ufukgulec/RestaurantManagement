@@ -15,5 +15,6 @@ namespace RestaurantManagement.Domain.Entities
         public Role? Role { get; set; }
 
         public ICollection<Order>? Orders { get; set; }
+
     }
 }

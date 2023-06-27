@@ -1,5 +1,4 @@
-﻿using RestaurantManagement.Application.AppRepositories;
-using RestaurantManagement.Application.Repositories;
+﻿using RestaurantManagement.Application.Repositories;
 using RestaurantManagement.Persistence.Contexts;
 using System;
 using System.Collections.Generic;
@@ -20,38 +19,21 @@ namespace RestaurantManagement.Application
             this.context = context;
         }
         //Fields
-        public ICategoryRepository? _CategoryRepository;
-        public IEmployeeRepository? _EmployeeRepository;
-        public IIngredientRepository? _IngredientRepository;
-        public IOrderRepository? _OrderRepository;
-        public IOrderDetailRepository? _OrderDetailRepository;
-        public IOrderTypeRepository? _OrderTypeRepository;
-        public IProcessRepository? _ProcessRepository;
-        public IProductRepository? _ProductRepository;
-        public IRecipeRepository? _RecipeRepository;
-        public IRoleRepository? _RoleRepository;
-        public ISupplierRepository? _SupplierRepository;
-        public IWholesaleRepository? _WholesaleRepository;
-        public INotificationTypeRepository? _NotificationTypeRepository;
-        public INotificationRepository? _NotificationRepository;
-
-
-        #region OS
-        public IMenuRepository? _MenuRepository;
-        public IOSAlertRepository? _OSAlertRepository;
-        public IOSEventRepository? _OSEventRepository;
-        public IOSHeaderActionRepository? _OSHeaderActionRepository;
-        public IOSHeaderRepository? _OSHeaderRepository;
-        public IOSLogRepository? _OSLogRepository;
-
-        public IMenuRepository MenuRepository => _MenuRepository ?? (_MenuRepository = new MenuRepository(context));
-        public IOSAlertRepository OSAlertRepository => _OSAlertRepository ?? (_OSAlertRepository = new OSAlertRepository(context));
-        public IOSEventRepository OSEventRepository => _OSEventRepository ?? (_OSEventRepository = new OSEventRepository(context));
-        public IOSHeaderActionRepository OSHeaderActionRepository => _OSHeaderActionRepository ?? (_OSHeaderActionRepository = new OSHeaderActionRepository(context));
-        public IOSHeaderRepository OSHeaderRepository => _OSHeaderRepository ?? (_OSHeaderRepository = new OSHeaderRepository(context));
-        public IOSLogRepository OSLogRepository => _OSLogRepository ?? (_OSLogRepository = new OSLogRepository(context));
-
-        #endregion
+        private ICategoryRepository? _CategoryRepository;
+        private IEmployeeRepository? _EmployeeRepository;
+        private IIngredientRepository? _IngredientRepository;
+        private IOrderRepository? _OrderRepository;
+        private IOrderDetailRepository? _OrderDetailRepository;
+        private IOrderTypeRepository? _OrderTypeRepository;
+        private IProcessRepository? _ProcessRepository;
+        private IProductRepository? _ProductRepository;
+        private IRecipeRepository? _RecipeRepository;
+        private IRoleRepository? _RoleRepository;
+        private ISupplierRepository? _SupplierRepository;
+        private IWholesaleRepository? _WholesaleRepository;
+        private INotificationTypeRepository? _NotificationTypeRepository;
+        private INotificationRepository? _NotificationRepository;
+        private INavigationRepository? _NavigationRepository;
 
 
         public ICategoryRepository CategoryRepository => _CategoryRepository ?? (_CategoryRepository = new CategoryRepository(context));
@@ -82,8 +64,7 @@ namespace RestaurantManagement.Application
 
         public INotificationRepository NotificationRepository => _NotificationRepository ?? (_NotificationRepository = new NotificationRepository(context));
 
-
-
+        public INavigationRepository NavigationRepository => _NavigationRepository ?? (_NavigationRepository = new NavigationRepository(context));
 
 
         public int SaveChanges()

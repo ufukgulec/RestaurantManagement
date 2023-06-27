@@ -45,7 +45,6 @@ namespace RestaurantManagement.Application.Repositories
         /// <param name="includes">Include</param>
         /// <returns>Çoğul veri IQueryable T</returns>
         IQueryable<T> GetAll(Expression<Func<T, bool>>? expression = null, bool justActive = true, bool tracking = true, params Expression<Func<T, object>>[] includes);
-
         /// <summary>
         /// Asenkron - Id'ye göre veriyi verir. Tracking mekanizmasına ihtiyaç yoksa false atanmalıdı. Include işlemi için (x=>x.Property1,x=>x.Property2) kullanılmalıdır.
         /// </summary>

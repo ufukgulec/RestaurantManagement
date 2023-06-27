@@ -1,0 +1,29 @@
+﻿@inherits LayoutComponentBase
+@using Blazored.Toast.Configuration
+
+<BlazoredToasts Position="ToastPosition.BottomRight"
+                Timeout="5"
+                SuccessClass="success-toast-override"
+                ShowProgressBar="true"
+                PauseProgressOnHover="true">
+</BlazoredToasts>
+<RadzenDialog />
+<RadzenContextMenu />
+<RadzenTooltip />
+
+<PageTitle>RestaurantManagement.UI</PageTitle>
+
+<div class="wrapper">
+    <LeftSideBar />
+    <div class="content-page">
+        <div class="content">
+            <TopBar />
+            <div class="container-fluid">
+                <PageHeader />
+                @Body
+            </div>
+        </div>
+        <Footer />
+    </div>
+</div>
+<RightSideBar />

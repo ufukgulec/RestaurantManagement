@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using RestaurantManagement.Application;
 using RestaurantManagement.Application.Repositories;
+using RestaurantManagement.Domain.Entities;
 using System;
 
 namespace RestaurantManagement.API.Controllers
@@ -28,11 +31,11 @@ namespace RestaurantManagement.API.Controllers
             }
             return BadRequest();
         }
-
+        [ResponseCache(Duration = 10)]
         [HttpGet("GetList")]
         public async Task<IActionResult> GetList()
         {
-            var result = await service.CategoryRepository.GetListAsync(default, false);
+            var result = await service.ProcessRepository.GetListAsync(default, false);
 
             if (result is not null)
             {
@@ -40,7 +43,7 @@ namespace RestaurantManagement.API.Controllers
             }
             return BadRequest();
         }
-
+        [ResponseCache(Duration = 10)]
         [HttpGet("BestSeller/{filter}")]
         public async Task<IActionResult> BestSeller(string filter)
         {
@@ -66,6 +69,124 @@ namespace RestaurantManagement.API.Controllers
                 return Ok(datas);
             }
             return BadRequest();
+        }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+        [HttpPost("Add")]
+        public async Task<IActionResult> Add(Process? entity)
+        {
+            var result = false;
+            var Message = "";
+            if (entity != null)
+            {
+                var exist = await service.ProcessRepository.GetSingleAsync(x => x.Name.ToLower() == entity.Name.ToLower());
+
+                if (exist == null)
+                {
+                    result = await service.ProcessRepository.AddAsync(entity);
+                    if (result)
+                    {
+                        Message = "Başarılı";
+                    }
+                    else
+                    {
+                        Message = "Eklerken bir hata oluştu";
+                    }
+                }
+                else
+                {
+                    Message = "Eklemeye çalıştığınız kategorinin ismiyle bir tane daha kategori vardır.";
+                }
+            }
+            if (result)
+            {
+                return Ok(Message);
+            }
+            else
+            {
+                return BadRequest(Message);
+            }
+
+        }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+        [HttpPost("Update")]
+        public async Task<IActionResult> Update(Process? entity)
+        {
+            var result = false;
+            var Message = "";
+            if (entity != null)
+            {
+                var exist = await service.ProcessRepository.GetByIdAsync(entity.Id.ToString(), false);
+
+                if (exist != null)
+                {
+                    result = await service.ProcessRepository.Update(entity);
+                    if (result)
+                    {
+                        Message = "Başarılı";
+                    }
+                    else
+                    {
+                        Message = "Güncellerken bir hata oluştu";
+                    }
+                }
+                else
+                {
+                    Message = "Güncellerken çalıştığınız kategori bulunamadı.";
+                }
+            }
+            if (result)
+            {
+                return Ok(Message);
+            }
+            else
+            {
+                return BadRequest(Message);
+            }
+
+        }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+        [HttpDelete("Remove/{id}")]
+        public async Task<IActionResult> Remove(string id)
+        {
+            var result = false;
+            var Message = "";
+            var exist = await service.ProcessRepository.GetByIdAsync(id);
+
+            if (exist != null)
+            {
+                if (exist.Active)
+                {
+                    exist.Active = false;
+                    await service.ProcessRepository.Update(exist);
+                    Message = "Kategori Pasif duruma getirildi.";
+                }
+                else
+                {
+                    result = await service.ProcessRepository.Remove(id);
+                    if (result)
+                    {
+                        Message = "Başarılı";
+                    }
+                    else
+                    {
+                        Message = "Silerken bir hata oluştu";
+                    }
+                }
+
+            }
+            else
+            {
+                Message = "Silmeye çalıştığınız kategori bulunamadı";
+            }
+
+            if (result)
+            {
+                return Ok(Message);
+            }
+            else
+            {
+                return BadRequest(Message);
+            }
         }
     }
 }

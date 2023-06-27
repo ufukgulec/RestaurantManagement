@@ -103,28 +103,146 @@ namespace RestaurantManagement.API.Controllers
         [HttpGet("BestSeller/{filter}")]
         public async Task<IActionResult> BestSeller(string filter)
         {
-            DateTime dt = DateTime.Now;
+            //DateTime dt = DateTime.Now;
 
-            var data = service.OrderDetailRepository.GetAll(x => x.Order.Active, true, false, x => x.Order);
+            //var data = service.OrderDetailRepository.GetAll(x => x.Order.Active, true, false, x => x.Order);
 
-            if (filter.ToLower() == "day")
-                data = data.Where(x => x.CreatedDate > new DateTime(dt.Year, dt.Month, dt.Day));
-            else if (filter.ToLower() == "month")
-                data = data.Where(x => x.CreatedDate > new DateTime(dt.Year, dt.Month, 1));
-            else if (filter.ToLower() == "year")
-                data = data.Where(x => x.CreatedDate > new DateTime(dt.Year, 1, 1));
+            //if (filter.ToLower() == "day")
+            //    data = data.Where(x => x.CreatedDate > new DateTime(dt.Year, dt.Month, dt.Day));
+            //else if (filter.ToLower() == "month")
+            //    data = data.Where(x => x.CreatedDate > new DateTime(dt.Year, dt.Month, 1));
+            //else if (filter.ToLower() == "year")
+            //    data = data.Where(x => x.CreatedDate > new DateTime(dt.Year, 1, 1));
 
-            var datas = await data.Where(x => x.Order.Employee.Active).GroupBy(x => x.Order.Employee.Fullname)
-                                      .Select(x => new
-                                      {
-                                          EmployeeId = x.Key.ToString(),
-                                          Count = x.Count()
-                                      }).OrderByDescending(x => x.Count).ToListAsync();
-            if (datas is not null)
-            {
-                return Ok(datas);
-            }
+            //var datas = await data.Where(x => x.Order.Employee.Active).GroupBy(x => x.Order.Employee.Fullname)
+            //                          .Select(x => new
+            //                          {
+            //                              EmployeeId = x.Key.ToString(),
+            //                              Count = x.Count()
+            //                          }).OrderByDescending(x => x.Count).ToListAsync();
+            //if (datas is not null)
+            //{
+            //    return Ok(datas);
+            //}
             return BadRequest();
+        }
+        [HttpPost("Add")]
+        public async Task<IActionResult> Add(Order entity)
+        {
+            entity.OrderType =await service.OrderTypeRepository.GetByIdAsync(entity.OrderTypeId.ToString());
+            var data = await service.OrderRepository.CreateOrderAsync(entity);
+            return Ok();
+            //var result = false;
+            //var Message = "";
+            //if (entity != null)
+            //{
+            //    var exist = await service.OrderRepository.GetSingleAsync(x => x.Name.ToLower() == entity.Name.ToLower());
+
+            //    if (exist == null)
+            //    {
+            //        result = await service.OrderRepository.AddAsync(entity);
+            //        if (result)
+            //        {
+            //            Message = "Başarılı";
+            //        }
+            //        else
+            //        {
+            //            Message = "Eklerken bir hata oluştu";
+            //        }
+            //    }
+            //    else
+            //    {
+            //        Message = "Eklemeye çalıştığınız kategorinin ismiyle bir tane daha kategori vardır.";
+            //    }
+            //}
+            //if (result)
+            //{
+            //    return Ok(Message);
+            //}
+            //else
+            //{
+            //    return BadRequest(Message);
+            //}
+
+        }
+        [HttpPost("Update")]
+        public async Task<IActionResult> Update(Order? entity)
+        {
+            var result = false;
+            var Message = "";
+            if (entity != null)
+            {
+                var exist = await service.OrderRepository.GetByIdAsync(entity.Id.ToString(), false);
+
+                if (exist != null)
+                {
+                    result = await service.OrderRepository.Update(entity);
+                    if (result)
+                    {
+                        Message = "Başarılı";
+                    }
+                    else
+                    {
+                        Message = "Güncellerken bir hata oluştu";
+                    }
+                }
+                else
+                {
+                    Message = "Güncellerken çalıştığınız kategori bulunamadı.";
+                }
+            }
+            if (result)
+            {
+                return Ok(Message);
+            }
+            else
+            {
+                return BadRequest(Message);
+            }
+
+        }
+        [HttpDelete("Remove/{id}")]
+        public async Task<IActionResult> Remove(string id)
+        {
+            var result = false;
+            var Message = "";
+            var exist = await service.OrderRepository.GetByIdAsync(id);
+
+            if (exist != null)
+            {
+                if (exist.Active)
+                {
+                    exist.Active = false;
+                    await service.OrderRepository.Update(exist);
+                    Message = "Kategori Pasif duruma getirildi.";
+                }
+                else
+                {
+                    result = await service.OrderRepository.Remove(id);
+                    if (result)
+                    {
+                        Message = "Başarılı";
+                    }
+                    else
+                    {
+                        Message = "Silerken bir hata oluştu";
+                    }
+                }
+
+            }
+            else
+            {
+                Message = "Silmeye çalıştığınız kategori bulunamadı";
+            }
+
+            if (result)
+            {
+                return Ok(Message);
+            }
+            else
+            {
+                return BadRequest(Message);
+            }
         }
     }
 }

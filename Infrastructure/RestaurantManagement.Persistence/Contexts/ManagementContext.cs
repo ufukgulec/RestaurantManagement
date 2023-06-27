@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RestaurantManagement.Domain.AppEntities;
 using RestaurantManagement.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -29,17 +28,9 @@ namespace RestaurantManagement.Persistence.Contexts
         public DbSet<Wholesale> Wholesales { get; set; }
         public DbSet<NotificationType> NotificationTypes { get; set; }
         public DbSet<Notification> Notifications { get; set; }
-
-        public DbSet<Menu> Menus { get; set; }
-        //public DbSet<TopMenu> TopMenus { get; set; }
-        //public DbSet<SubMenu> SubMenus { get; set; }
-        #region OS Config
-        public DbSet<OSAlert> OSAlerts { get; set; }
-        public DbSet<OSEvent> OSEvents { get; set; }
-        public DbSet<OSHeader> OSHeaders { get; set; }
-        public DbSet<OSHeaderAction> OSHeaderActions { get; set; }
-        public DbSet<OSLog> OSLogs { get; set; }
-        #endregion
+        public DbSet<Request> Requests { get; set; }
+        public DbSet<Log> Logs { get; set; }
+        public DbSet<Navigation> Navigations { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -81,6 +72,7 @@ namespace RestaurantManagement.Persistence.Contexts
             var modified = ChangeTracker.Entries()
                                     .Where(i => i.State == EntityState.Modified)
                                     .Select(i => (BaseEntity)i.Entity);
+
             if (added.Count() > 0)
             {
                 PrepareAddedEntities(added);

@@ -1,0 +1,32 @@
+﻿@inherits BaseModalComponent
+<div class="modal-backdrop fade show">
+</div>
+<div id="centermodal" class="modal fade show" tabindex="-1" aria-labelledby="standard-modalLabel" style="display: block;" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header modal-colored-header bg-@Color">
+                <h4 class="modal-title" id="standard-modalLabel">@Caption</h4>
+                @*<IconButtonComponent Icon="@CloseIcon" Color="@Color" OnClick="@CancelClicked" />*@
+                <RadzenButton Click="CancelClicked" Text="Cancel" Icon="refresh" ButtonStyle="ButtonStyle.Light" />
+                <RadzenButton Click="CancelClicked" Icon=" add_circle_outline" ButtonStyle="ButtonStyle.Primary" />
+            </div>
+            <div class="modal-body">
+                @Text
+            </div>
+            <div class="modal-footer">
+                @*<DefaultButtonComponent Caption="@OkText" Color="primary" OnClick="@ConfirmClicked" />*@
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+@code {
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        Text = parameters.GetValueOrDefault<string>("Text") ?? "Mesaj Yok";
+        OkText = "OK";
+        CancelText = "CANCEL";
+
+        return base.SetParametersAsync(parameters);
+    }
+}

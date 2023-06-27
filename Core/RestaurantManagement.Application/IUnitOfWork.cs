@@ -23,16 +23,7 @@ namespace RestaurantManagement.Application
         IWholesaleRepository WholesaleRepository { get; }
         INotificationTypeRepository NotificationTypeRepository { get; }
         INotificationRepository NotificationRepository { get; }
-
-        #region OS
-        IMenuRepository MenuRepository { get; }
-        IOSAlertRepository OSAlertRepository{get;}
-        IOSEventRepository OSEventRepository {get;}
-        IOSHeaderActionRepository OSHeaderActionRepository {get;}
-        IOSHeaderRepository OSHeaderRepository {get;}
-        IOSLogRepository OSLogRepository {get;}
-        #endregion
-
+        INavigationRepository NavigationRepository { get; }
 
         int SaveChanges();
         Task<int> SaveChangesAsync();

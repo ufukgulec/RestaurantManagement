@@ -2,12 +2,7 @@
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using RestaurantManagement.Domain.Entities;
 using RestaurantManagement.Persistence.Contexts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RestaurantManagement.Application.Repositories
 {
@@ -30,7 +25,12 @@ namespace RestaurantManagement.Application.Repositories
             {
                 query = query.Include(item);
             }
-            return query.FirstOrDefault(data => data.Id == Guid.Parse(id));
+            var entity = query.FirstOrDefault(data => data.Id == Guid.Parse(id));
+
+            if (entity is null)
+                throw new ArgumentException($"UniqueId : {id} Bu nesne '{typeof(T).Name}' tablosunda bulunamadı.");
+
+            return entity;
         }
         public T? GetSingle(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] includes)
         {
@@ -40,7 +40,12 @@ namespace RestaurantManagement.Application.Repositories
             {
                 query = query.Include(item);
             }
-            return query.FirstOrDefault(expression);
+            var entity = query.FirstOrDefault(expression);
+
+            if (entity is null)
+                throw new ArgumentException($"'{typeof(T).Name}' tablosunda aradığınız nesne bulunamadı.");
+
+            return entity;
         }
 
         public List<T> GetList(Expression<Func<T, bool>>? expression = null, bool justActive = true, params Expression<Func<T, object>>[] includes)
@@ -59,6 +64,10 @@ namespace RestaurantManagement.Application.Repositories
             {
                 query = query.Where(expression);
             }
+
+            if (query is null)
+                throw new ArgumentException($"'{typeof(T).Name}' tablosunda kayıt bulunamadı.");
+
             return query.ToList();
         }
 
@@ -82,9 +91,13 @@ namespace RestaurantManagement.Application.Repositories
                 query = query.Where(expression);
             }
 
+            if (query is null)
+                throw new ArgumentException($"'{typeof(T).Name}' tablosunda kayıt bulunamadı.");
+
             return query;
         }
         #endregion
+
         #region Async
         public async Task<T?> GetByIdAsync(string id, bool tracking = true, params Expression<Func<T, object>>[] includes)
         {
@@ -97,7 +110,14 @@ namespace RestaurantManagement.Application.Repositories
             {
                 query = query.Include(item);
             }
-            return await query.FirstOrDefaultAsync(data => data.Id == Guid.Parse(id));
+
+            var entity = await query.FirstOrDefaultAsync(data => data.Id == Guid.Parse(id));
+
+            if (entity is null)
+                throw new ArgumentException($"UniqueId : {id} Bu nesne '{typeof(T).Name}' tablosunda bulunamadı.");
+
+            return entity;
+
         }
         public async Task<T?> GetSingleAsync(Expression<Func<T, bool>>? expression = null, bool tracking = true, params Expression<Func<T, object>>[] includes)
         {
@@ -138,6 +158,9 @@ namespace RestaurantManagement.Application.Repositories
                 query = query.Where(expression);
             }
 
+            if (query is null)
+                throw new ArgumentException($"'{typeof(T).Name}' tablosunda kayıt bulunamadı.");
+
             return await query.ToListAsync();
         }
 
@@ -169,6 +192,8 @@ namespace RestaurantManagement.Application.Repositories
 
         public async Task<bool> Update(T entity)
         {
+            var exist = await GetByIdAsync(entity.Id.ToString());
+
             EntityEntry<T> entityEntry = Table.Update(entity);
 
             if (await _context.SaveChangesAsync() > 0)
@@ -181,25 +206,26 @@ namespace RestaurantManagement.Application.Repositories
         public async Task<bool> Remove(string id)
         {
             var entity = await GetByIdAsync(id);
-            if (entity is not null)
-            {
-                return await Remove(entity);
-            }
-            else
-            {
-                return false;
-            }
 
+            return await Remove(entity);
         }
 
         public async Task<bool> Remove(T entity)
         {
-            EntityEntry<T> entityEntry = Table.Remove(entity);
-            if (await _context.SaveChangesAsync() > 0)
+            if (entity.Active)
             {
-                return true;
+                entity.Active = false;
+                return await Update(entity);
             }
-            return false;
+            else
+            {
+                EntityEntry<T> entityEntry = Table.Remove(entity);
+                if (await _context.SaveChangesAsync() > 0)
+                {
+                    return true;
+                }
+                return false;
+            }
         }
 
         public bool RemoveRange(List<T> entities)

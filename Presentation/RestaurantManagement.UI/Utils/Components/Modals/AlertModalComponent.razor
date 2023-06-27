@@ -1,0 +1,28 @@
+﻿@inherits BaseModalComponent
+<div class="modal-backdrop fade show">
+</div>
+<div id="info-alert-modal" class="modal fade show" tabindex="-1" style="display: block;" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body p-4">
+                <div class="text-center">
+                    <i class="@Icon h1 text-@Color"></i>
+                    <h4 class="mt-2">@Caption</h4>
+                    <p class="mt-3">@Text</p>
+                    <DefaultButtonComponent Caption="@OkText" Color="@Color" OnClick="@CancelClicked" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        Caption = parameters.GetValueOrDefault<string>("Caption") ?? "Başlık Yok";
+        Text = parameters.GetValueOrDefault<string>("Text") ?? "Mesaj Yok";
+        OkText = parameters.GetValueOrDefault<string>("OkText") ?? "OK";
+
+        return base.SetParametersAsync(parameters);
+    }
+}

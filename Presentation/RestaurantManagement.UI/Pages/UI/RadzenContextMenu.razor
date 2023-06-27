@@ -1,0 +1,27 @@
+﻿@page "/contextmenu"
+@inherits BasePage
+
+<RadzenStack Gap="1rem" Class="rz-p-sm-12">
+    <RadzenButton Text="Right click me" ContextMenu=@(args => ShowContextMenuWithItems(args)) ButtonStyle="ButtonStyle.Secondary" Size="ButtonSize.Large" />
+</RadzenStack>
+
+@code {
+
+    void ShowContextMenuWithItems(MouseEventArgs args)
+    {
+        ContextMenuManager.Open(args,
+            new List<ContextMenuItem> {
+                new ContextMenuItem(){ Text = "Context menu item 1", Value = 1, Icon = "home" },
+                new ContextMenuItem(){ Text = "Context menu item 2", Value = 2, Icon = "search" },
+                new ContextMenuItem(){ Text = "Context menu item 3", Value = 3, Icon = "info" },
+             }, OnMenuItemClick);
+    }
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        {
+            ContextMenuManager.Close();
+        }
+    }
+}

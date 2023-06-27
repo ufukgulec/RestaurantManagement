@@ -1,0 +1,47 @@
+﻿<div class="row">
+    <div class="col-12">
+        <div class="page-title-box">
+            <div class="page-title-right">
+                <form class="d-flex">
+                    <div class="input-group">
+                        <input type="text" class="form-control form-control-light"
+                               id="dash-daterange">
+                        <span class="input-group-text bg-primary border-primary text-white">
+                            <i class="mdi mdi-calendar-range font-13"></i>
+                        </span>
+                    </div>
+                    <!--TODO Veritabanında menülerin yanında birde tag kolonu olacak bu componentte o taglara göre filtre yapacak ve ilgili sayfayı listeleyecek-->
+                    <RadzenButton class="ms-2" Click="Refresh" Icon="refresh" ButtonStyle="ButtonStyle.Primary" />
+                    <!--TODO Sayfa içindeki cache silinecek ve yenilenecek-->
+                    <RadzenButton class="ms-2" Click="Report" Icon="report" ButtonStyle="ButtonStyle.Danger" />
+                    <!--TODO Sayfada bir hata varsa modal açılacak ve textarea ile rapor edilecek / geliştirmeye mail gönderilebilir / report tablosu olabilir-->
+                </form>
+            </div>
+            <h4 class="page-title">@Title</h4>
+        </div>
+    </div>
+</div>
+
+@inject IJSRuntime JSRuntime;
+@inject INotificationManager NotificationManager;
+@code {
+
+    public string Title = "";
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        
+            Title = await JSRuntime.InvokeAsync<string>("getTitle");
+            StateHasChanged();
+        
+    }
+
+
+    public void Refresh()
+    {
+        NotificationManager.ShowInfo("Yenilendi");
+    }
+    public void Report()
+    {
+        NotificationManager.ShowError("Report");
+    }
+}

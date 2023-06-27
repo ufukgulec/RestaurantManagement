@@ -1,0 +1,39 @@
+﻿@inherits BaseComponent
+
+@code {
+    [Parameter]
+    public string Caption { get; set; }
+    [Parameter]
+    public string Text { get; set; }
+    [Parameter]
+    public string Color { get; set; }
+    [Parameter]
+    public string Icon { get; set; }
+    [Parameter]
+    public string CloseIcon { get; set; } = "dripicons-cross";
+    [Parameter]
+    public string OkText { get; set; }
+    [Parameter]
+    public string CancelText { get; set; }
+    [Parameter]
+    public string YesText { get; set; }
+    [Parameter]
+    public string NoText { get; set; }
+
+    [CascadingParameter]
+    BlazoredModalInstance modalInstance { get; set; }
+
+    protected async Task ConfirmClicked()
+    {
+        await modalInstance.CloseAsync(ModalResult.Ok<string>(""));
+    }
+    protected async Task RejectClicked()
+    {
+        await modalInstance.CloseAsync(ModalResult.Cancel());
+    }
+    protected async Task CancelClicked()
+    {
+        await modalInstance.CloseAsync(ModalResult.Cancel());
+    }
+
+}

@@ -24,6 +24,11 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\Core\RestaurantManagement.Application\RestaurantManagement.Application.csproj" />
 		<ProjectReference Include="..\..\Core\RestaurantManagement.Domain\RestaurantManagement.Domain.csproj" />
+		<ProjectReference Include="..\..\Presentation\RestaurantManagement.Shared\RestaurantManagement.Shared.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Extensions\" />
 	</ItemGroup>
 
 </Project>

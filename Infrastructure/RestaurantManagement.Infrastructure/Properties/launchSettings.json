@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "RestaurantManagement.Infrastructure": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:63734;http://localhost:63735"
+    }
+  }
+}

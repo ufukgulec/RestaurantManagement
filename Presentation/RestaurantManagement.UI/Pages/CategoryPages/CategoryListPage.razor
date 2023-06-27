@@ -1,0 +1,13 @@
+﻿@page "/categories"
+@inherits BasePage
+
+<RadzenDataGrid @ref="grid" @bind-Value=@selectedCategories ShowPagingSummary="true" KeyProperty="Id" IsLoading="@isLoading" Count="@count" Data="@categories" LoadData="@LoadData" FilterPopupRenderMode="PopupRenderMode.OnDemand" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterMode="FilterMode.Advanced" AllowSorting="true" AllowFiltering="true" AllowPaging="true" PageSize="5" PagerHorizontalAlign="HorizontalAlign.Center" TItem="Category" ColumnWidth="200px">
+    <Columns>
+        <RadzenDataGridColumn TItem="Category" Property="Id" Filterable="false" Title="ID" Frozen="true" Width="50px" TextAlign="TextAlign.Center" />
+        <RadzenDataGridColumn TItem="Category" Property="Name" Title="First Name" />
+        <RadzenDataGridColumn TItem="Category" Property="Description" Title="Last Name" Width="150px" />
+        <RadzenDataGridColumn TItem="Category" Property="Active" Title="Title" Type="typeof(IEnumerable<string>)" FilterValue="@selectedTitles" FilterOperator="FilterOperator.Contains" />
+        <RadzenDataGridColumn TItem="Category" Title="CreatedDate" FormatString="{0:d}" />
+        <RadzenDataGridColumn TItem="Category" Property="UpdatedDate" FormatString="{0:d}" />
+    </Columns>
+</RadzenDataGrid>
